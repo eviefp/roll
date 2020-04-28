@@ -1,31 +1,26 @@
 let
   sources = import ./nix/sources.nix;
-  overlay = _: pkgs: {
+  overlay = self: super: {
     niv = import sources."niv" {};
   };
-  haskell-nix = import sources."haskell.nix";
+  hpOverlay = self: super: {
+    haskellPackages = super.haskellPackages.override (selfHS: superHS: {
+      hie-bios = self.haskell.lib.unmarkBroken superHS.hie-bios;
+    });
+  };
 
-  pkgs = import sources."nixpkgs" {
-    # overlays = [ overlay ];
-    config = {
-      packageOverides = pkgs: rec {
-        haskellPackages = pkgs.haskellPackages.override {
-          overrides = haskellPackagesNew: haskellPackagesOld: rec {
-            hie-bios = pkgs.haskell.lib.unmarkBroken pkgs.haskellPackages.hie-bios;
-          };
-        };
-      };
-    };
+  pkgs = import sources.nixpkgs {
+    overlays = [ overlay hpOverlay ];
+    config = {};
   };
   ghcide = pkgs.haskell.packages.ghc883.callPackage ./ghcide.nix {};
 
 in
   pkgs.mkShell rec {
-    nativeBuildInputs = [
-      pkgs.haskellPackages.cabal2nix
-      pkgs.haskell.compiler.ghc883
-      pkgs.haskellPackages.ghcid_0_8_6
+    nativeBuildInputs = with pkgs; [
+      haskellPackages.cabal2nix
+      haskell.compiler.ghc883
+      haskellPackages.ghcid_0_8_6
       ghcide
     ];
-    NIX_PATH = "nixpkgs=${pkgs.path}";
   }
