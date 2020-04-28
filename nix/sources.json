@@ -11,18 +11,6 @@
         "url": "https://github.com/justinwoo/easy-purescript-nix/archive/d4879bfd2b595d7fbd37da1a7bea5d0361975eb3.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
-    "haskell.nix": {
-        "branch": "master",
-        "description": "Alternative Haskell Infrastructure for Nixpkgs",
-        "homepage": "https://input-output-hk.github.io/haskell.nix",
-        "owner": "input-output-hk",
-        "repo": "haskell.nix",
-        "rev": "aa30155d0501533d7a82e73fa22ccb56e2c58a4b",
-        "sha256": "0mkpblzvyc7bhxvi461z43f8bp1bcx9n8jcfkj2ygylsz7ssll5a",
-        "type": "tarball",
-        "url": "https://github.com/input-output-hk/haskell.nix/archive/aa30155d0501533d7a82e73fa22ccb56e2c58a4b.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
     "niv": {
         "branch": "master",
         "description": "Easy dependency management for Nix projects",
