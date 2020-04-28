@@ -2,6 +2,10 @@ let
   sources = import ./nix/sources.nix;
   overlay = self: super: {
     niv = import sources."niv" {};
+    haskellPackages = super.haskellPackages.extend (selfHP: superHP: {
+      floskell = with self.haskell.lib; dontCheck (unmarkBroken superHP.floskell);
+      monad-dijkstra = with self.haskell.lib; dontCheck (unmarkBroken superHP.monad-dijkstra);
+    });
   };
   hpOverlay = self: super: {
     haskell = super.haskell // {
@@ -27,6 +31,8 @@ in
       cabal2nix
       haskell.compiler.ghc883
       haskellPackages.ghcid_0_8_6
+      haskellPackages.floskell
       ghcide
     ];
+    NIX_PATH = "nixpkgs=${pkgs.path}";
   }

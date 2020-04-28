@@ -1,0 +1,131 @@
+{ "language": "Haskell2010"
+, "extensions":
+  [
+  ]
+, "style": "base"
+, "formatting":
+  { "penalty":
+    { "indent": 1
+    , "linebreak": 10
+    , "max-line-length": 80
+    , "overfull": 9999
+    , "overfull-once": 999999
+    }
+  , "layout":
+    { "app": "flex"
+    , "con-decls": "vertical"
+    , "declaration": "flex"
+    , "export-spec-list": "vertical"
+    , "if": "flex"
+    , "import-spec-list": "vertical"
+    , "infix-app": "flex"
+    , "let": "vertical"
+    , "list-comp": "flex"
+    , "record": "vertical"
+    , "type": "flex"
+    }
+  , "indent":
+    { "onside": 4
+    , "deriving": 0
+    , "where": 2
+    , "case": 4
+    , "class": 4
+    , "do": 4
+    , "export-spec-list": 4
+    , "if": 4
+    , "import-spec-list": 4
+    , "let": 4
+    , "let-binds": 4
+    , "let-in": 4
+    , "multi-if": 4
+    , "typesig": 4
+    , "where-binds": 2
+    }
+  , "align":
+    { limits: [ 10, 25 ]
+    , "case": false
+    , "class": false
+    , "import-module": false
+    , "import-spec": false
+    , "let-binds": false
+    , "matches": false
+    , "record-fields": false
+    , "where": false
+    }
+  , "group":
+    {
+    }
+  , "op":
+    { "default":
+      { "force-linebreak": false
+      , "spaces": "both"
+      , "linebreaks": "before"
+      }
+    , ",":
+      { "force-linebreak": false
+      , "spaces": "after"
+      , "linebreaks": "before"
+      }
+    , "=":
+      { "force-linebreak": false
+      , "spaces": "both"
+      , "linebreaks": "after"
+      }
+    , "@":
+      { "force-linebreak": false
+      , "spaces": "none"
+      , "linebreaks": "none"
+      }
+    , ". in expression":
+      { "force-linebreak": false
+      , "spaces": "both"
+      , "linebreaks": "before"
+      }
+    , "-> in expression":
+      { "force-linebreak": false
+      , "spaces": "both"
+      , "linebreaks": "after"
+      }
+    , ". in type":
+      { "force-linebreak": false
+      , "spaces": "after"
+      , "linebreaks": "after"
+      }
+    , "$":
+      { "force-linebreak": false
+      , "spaces": "both"
+      , "linebreaks": "after"
+      }
+    , "record in pattern":
+      { "force-linebreak": false
+      , "spaces": "none"
+      , "linebreaks": "none"
+      }
+    , "record":
+      { "force-linebreak": false
+      , "spaces": "after"
+      , "linebreaks": "none"
+      }
+    }
+  , "options":
+    { "align-sum-type-decl": true
+    , "preserve-vertical-space": false
+    , "decl-no-blank-lines": []
+    , "sort-import-lists": true
+    , "sort-imports":
+      [ { "prefixes": [ "" ]
+        , "order": "grouped"
+        }
+      , { "prefixes": [ "Roll" ]
+        , "order": "grouped"
+        }
+      , { "prefixes": [ "Roll.Prelude" ]
+        , "order": "grouped"
+        }
+      ]
+    , "sort-pragmas": true
+    , "flexible-oneline": false
+    , "split-language-pragmas": true
+    }
+  }
+}
