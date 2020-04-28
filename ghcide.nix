@@ -46,6 +46,8 @@ mkDerivation {
     tasty-expected-failure tasty-hunit tasty-quickcheck tasty-rerun
     text
   ];
+  doHaddock = false;
+  doCheck = false;
   homepage = "https://github.com/digital-asset/ghcide#readme";
   description = "The core of an IDE";
   license = stdenv.lib.licenses.asl20;

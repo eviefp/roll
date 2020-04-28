@@ -4,9 +4,15 @@ let
     niv = import sources."niv" {};
   };
   hpOverlay = self: super: {
-    haskellPackages = super.haskellPackages.override (selfHS: superHS: {
-      hie-bios = self.haskell.lib.unmarkBroken superHS.hie-bios;
-    });
+    haskell = super.haskell // {
+      packages = super.haskell.packages // {
+        ghc883 = super.haskell.packages.ghc883.extend (selfGHC: superGHC: {
+          hie-bios = with self.haskell.lib; dontCheck (unmarkBroken superGHC.hie-bios);
+          haskell-lsp-types = self.haskell.packages.ghc883.callPackage ./haskell-lsp-types.nix {};
+          haskell-lsp= self.haskell.packages.ghc883.callPackage ./haskell-lsp.nix {};
+        });
+      };
+    };
   };
 
   pkgs = import sources.nixpkgs {
@@ -18,7 +24,7 @@ let
 in
   pkgs.mkShell rec {
     nativeBuildInputs = with pkgs; [
-      haskellPackages.cabal2nix
+      cabal2nix
       haskell.compiler.ghc883
       haskellPackages.ghcid_0_8_6
       ghcide
