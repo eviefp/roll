@@ -31,7 +31,7 @@ bench:
 	$(stack) bench $(package)
 
 ghcid:
-	$(stack) exec -- ghcid -c "stack ghci $(package):lib --test --ghci-options='-fobject-code -fno-warn-unused-do-bind' --main-is $(package):$(package)"
+	ghcid -a -c "stack ghci $(package):lib --test --ghci-options='-fobject-code -fno-warn-unused-do-bind' --main-is $(package):$(package)"
 
 dev-deps:
 	stack build ghcid

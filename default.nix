@@ -26,7 +26,7 @@ let
 
   easy-ps = import sources.easy-purescript-nix { inherit pkgs; };
 
-  ghcide = pkgs.haskell.packages.ghc883.callPackage ./ghcide.nix {};
+  ghcide = pkgs.haskell.packages.ghc883.callPackage ./nix/ghcide.nix {};
 
   self = {
     inherit (pkgs) niv;

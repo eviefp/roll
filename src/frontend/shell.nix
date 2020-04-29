@@ -3,5 +3,8 @@ let
   inherit (easy-ps) purs spago pscid;
 in
   pkgs.mkShell {
-    buildInputs = [ purs spago pscid ];
+    buildInputs = [
+      pkgs.nodejs # for npx to install purescript-language-server
+      purs spago pscid
+    ];
   }
