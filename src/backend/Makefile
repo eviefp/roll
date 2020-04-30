@@ -6,32 +6,17 @@ stack = $(stack_yaml) stack
 build:
 	$(stack) build $(package)
 
-build-dirty:
-	$(stack) build --ghc-options=-fforce-recomp $(package)
-
-build-profile:
-	$(stack) --work-dir .stack-work-profiling --profile build
-
-run:
-	$(stack) build --fast && $(stack) exec -- $(package)
-
-install:
-	$(stack) install
-
 ghci:
-	$(stack) ghci $(package):lib 
+	$(stack) ghci $(package):lib
 
 test:
 	$(stack) test $(package)
 
-test-ghci:
-	$(stack) ghci $(package):test:$(package)-tests
-
-bench:
-	$(stack) bench $(package)
-
 ghcid:
 	ghcid -a -c "stack ghci $(package):lib --test --ghci-options='-fobject-code -fno-warn-unused-do-bind' --main-is $(package):$(package)"
+
+postgres:
+	nix-shell ./postgres-shell.nix
 
 dev-deps:
 	stack build ghcid

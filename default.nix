@@ -28,9 +28,12 @@ let
 
   ghcide = pkgs.haskell.packages.ghc883.callPackage ./nix/ghcide.nix {};
 
+  pgutil = pkgs.callPackage ./nix/pgutil.nix {};
+
   self = {
     inherit (pkgs) niv;
     inherit pkgs easy-ps ghcide;
+    inherit pgutil;
   };
 
 in
