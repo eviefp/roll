@@ -4,7 +4,11 @@ module Main
 
 import           Roll.Prelude
 
-import           Roll         ( startApp )
+import           Roll
+    ( startApp
+    )
 
-main :: IO ()
-main = startApp
+main
+    :: IO ()
+main =
+    startApp

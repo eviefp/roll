@@ -1,8 +1,6 @@
 { "language": "Haskell2010"
 , "extensions":
-  [ "LambdaCase"
-  , "BlockArguments"
-  , "DataKinds"
+  [ "DataKinds"
   , "DeriveAnyClass"
   , "DeriveGeneric"
   , "DerivingVia"
@@ -27,7 +25,7 @@
 , "formatting":
   { "penalty":
     { "indent": 1
-    , "linebreak": 10
+    , "linebreak": 100
     , "max-line-length": 80
     , "overfull": 9999
     , "overfull-once": 999999
@@ -35,10 +33,10 @@
   , "layout":
     { "app": "flex"
     , "con-decls": "vertical"
-    , "declaration": "flex"
+    , "declaration": "vertical"
     , "export-spec-list": "vertical"
     , "if": "flex"
-    , "import-spec-list": "try-oneline"
+    , "import-spec-list": "vertical"
     , "infix-app": "flex"
     , "let": "vertical"
     , "list-comp": "flex"
@@ -47,7 +45,7 @@
     }
   , "indent":
     { "onside": 4
-    , "deriving": 0
+    , "deriving": 4
     , "where": 2
     , "case": "indent-by 4"
     , "class": "indent-by 4"
@@ -65,13 +63,13 @@
   , "align":
     { "limits": [ 10, 25 ]
     , "case": true
-    , "class": false
+    , "class": true
     , "import-module": true
     , "import-spec": true
-    , "let-binds": false
-    , "matches": false
-    , "record-fields": false
-    , "where": false
+    , "let-binds": true
+    , "matches": true
+    , "record-fields": true
+    , "where": true
     }
   , "group":
     {
@@ -118,15 +116,30 @@
       , "linebreaks": "after"
       }
     , "record in pattern":
-      { "force-linebreak": false
+      { "force-linebreak": true
       , "spaces": "none"
       , "linebreaks": "none"
       }
     , "record":
-      { "force-linebreak": false
+      { "force-linebreak": true
       , "spaces": "after"
-      , "linebreaks": "none"
+      , "linebreaks": "after"
       }
+    , ":: in declaration":
+        { "force-linebreak": true
+        , "spaces": "after"
+        , "linebreaks": "before"
+        }
+    , ":- in type":
+        { "force-linebreak": true
+        , "spaces": "after"
+        , "linebreaks": "before"
+        }
+    , ":> in type":
+        { "force-linebreak": true
+        , "spaces": "after"
+        , "linebreaks": "before"
+        }
     }
   , "options":
     { "align-sum-type-decl": true
