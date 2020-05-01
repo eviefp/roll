@@ -1,0 +1,4 @@
+--reload src
+--reload app
+--restart stack.yaml
+--restart package.yaml

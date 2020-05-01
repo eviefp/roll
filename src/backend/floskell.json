@@ -1,6 +1,27 @@
 { "language": "Haskell2010"
 , "extensions":
-  [
+  [ "LambdaCase"
+  , "BlockArguments"
+  , "DataKinds"
+  , "DeriveAnyClass"
+  , "DeriveGeneric"
+  , "DerivingVia"
+  , "EmptyCase"
+  , "FlexibleContexts"
+  , "FlexibleInstances"
+  , "GADTs"
+  , "LambdaCase"
+  , "MultiParamTypeClasses"
+  , "NamedFieldPuns"
+  , "NoImplicitPrelude"
+  , "GeneralizedNewtypeDeriving"
+  , "OverloadedStrings"
+  , "ScopedTypeVariables"
+  , "StrictData"
+  , "TypeApplications"
+  , "TypeFamilies"
+  , "TypeOperators"
+  , "TupleSections"
   ]
 , "style": "base"
 , "formatting":
@@ -17,7 +38,7 @@
     , "declaration": "flex"
     , "export-spec-list": "vertical"
     , "if": "flex"
-    , "import-spec-list": "vertical"
+    , "import-spec-list": "try-oneline"
     , "infix-app": "flex"
     , "let": "vertical"
     , "list-comp": "flex"
@@ -28,25 +49,25 @@
     { "onside": 4
     , "deriving": 0
     , "where": 2
-    , "case": 4
-    , "class": 4
-    , "do": 4
-    , "export-spec-list": 4
-    , "if": 4
-    , "import-spec-list": 4
-    , "let": 4
-    , "let-binds": 4
-    , "let-in": 4
-    , "multi-if": 4
-    , "typesig": 4
-    , "where-binds": 2
+    , "case": "indent-by 4"
+    , "class": "indent-by 4"
+    , "do": "indent-by 4"
+    , "export-spec-list": "indent-by 4"
+    , "if": "indent-by 4"
+    , "import-spec-list": "indent-by 4"
+    , "let": "indent-by 4"
+    , "let-binds": "indent-by 4"
+    , "let-in": "indent-by 4"
+    , "multi-if": "indent-by 4"
+    , "typesig": "indent-by 4"
+    , "where-binds": "indent-by 2"
     }
   , "align":
-    { limits: [ 10, 25 ]
-    , "case": false
+    { "limits": [ 10, 25 ]
+    , "case": true
     , "class": false
-    , "import-module": false
-    , "import-spec": false
+    , "import-module": true
+    , "import-spec": true
     , "let-binds": false
     , "matches": false
     , "record-fields": false
@@ -113,13 +134,13 @@
     , "decl-no-blank-lines": []
     , "sort-import-lists": true
     , "sort-imports":
-      [ { "prefixes": [ "" ]
+      [ { "prefixes": [ "Roll.Prelude" ]
+        , "order": "grouped"
+        }
+      , { "prefixes": [ "" ]
         , "order": "grouped"
         }
       , { "prefixes": [ "Roll" ]
-        , "order": "grouped"
-        }
-      , { "prefixes": [ "Roll.Prelude" ]
         , "order": "grouped"
         }
       ]

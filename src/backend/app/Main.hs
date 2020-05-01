@@ -1,6 +1,10 @@
-module Main where
+module Main
+    ( main
+    ) where
 
-import Prelude
+import           Roll.Prelude
+
+import           Roll         ( startApp )
 
 main :: IO ()
-main = pure ()
+main = startApp

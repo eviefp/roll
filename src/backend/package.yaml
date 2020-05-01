@@ -21,49 +21,49 @@ description:         Please see the README on GitHub at <https://github.com/gith
 
 dependencies:
 - base >= 4.7 && < 5
+- bytestring
+- containers
+- generic-lens
+- lens
+- servant
+- servant-server
+- warp
 
 default-extensions:
-  - BangPatterns
-  - ConstraintKinds
-  - DataKinds
-  - DeriveDataTypeable
-  - DeriveGeneric
-  - EmptyDataDecls
-  - FlexibleContexts
-  - FlexibleInstances
-  - GADTs
-  - GeneralizedNewtypeDeriving
-  - InstanceSigs
-  - MultiParamTypeClasses
-  - NoImplicitPrelude
-  - NoMonomorphismRestriction
-  - OverloadedStrings
-  - QuasiQuotes
-  - RankNTypes
-  - RecordWildCards
-  - ScopedTypeVariables
-  - TemplateHaskell
-  - TupleSections
-  - TypeFamilies
-  - TypeOperators
-  - ViewPatterns
+- BlockArguments
+- DataKinds
+- DeriveAnyClass
+- DeriveGeneric
+- DerivingVia
+- EmptyCase
+- FlexibleContexts
+- FlexibleInstances
+- GADTs
+- LambdaCase
+- MultiParamTypeClasses
+- NamedFieldPuns
+- NoImplicitPrelude
+- GeneralizedNewtypeDeriving
+- OverloadedStrings
+- ScopedTypeVariables
+- StrictData
+- TypeApplications
+- TypeFamilies
+- TypeOperators
+- TupleSections
 
 ghc-options:
-  - -Weverything
-  - -Wno-missing-home-modules # Behavior doesn't make sense
-  - -Wno-redundant-constraints # doesn't play nice with DB or other constraint synonyms
-  - -Wno-missed-specialisations # brings up a lot more than you'd expect. not sure how actionable they are.
-  - -Wno-all-missed-specialisations # see -Wno-missed-specialisations
-  - -Wno-missing-export-lists # obnoxious
-  - -Wno-missing-local-signatures # also obnoxious
-  - -Wno-missing-exported-signatures # missing-exported-signatures turns off the more strict -Wmissing-signatures. See https://ghc.haskell.org/trac/ghc/ticket/14794#ticket
-  - -Wno-missing-import-lists # Requires explicit imports of _every_ function (e.g. '$'); too strict
-  # - -Wno-missed-specialisations # When GHC can't specialize a polymorphic function. No big deal and requires fixing underlying libraries to solve.
-  # - -Wno-all-missed-specialisations # See missed-specialisations
-  - -Wno-unsafe # Don't use Safe Haskell warnings
-  - -Wno-safe # Don't use Safe Haskell warnings
-  - -Wno-missing-local-signatures # Warning for polymorphic local bindings; nothing wrong with those.
-  - -Wno-monomorphism-restriction # Don't warn if the monomorphism restriction is used
+  - -Werror
+  - -fno-ignore-asserts
+  - -Wall
+  - -Wcompat
+  - -Widentities
+  - -Wincomplete-uni-patterns
+  - -Wincomplete-record-updates
+  - -Wpartial-fields
+  - -Wredundant-constraints
+  - -Wmissing-export-lists
+  - -Wmissing-deriving-strategies
 
 library:
   source-dirs: src
