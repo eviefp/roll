@@ -13,7 +13,7 @@ test:
 	$(stack) test $(package)
 
 ghcid:
-	ghcid -a -c "stack ghci $(package):lib --test --ghci-options='-fobject-code -fno-warn-unused-do-bind' --main-is $(package):$(package)"
+	ghcid -a -c "stack ghci $(package):lib --test --ghci-options='-fobject-code -fno-warn-unused-do-bind -Wno-type-defaults' --main-is $(package):$(package)"
 
 postgres:
 	nix-shell ./postgres-shell.nix

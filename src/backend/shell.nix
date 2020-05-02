@@ -9,6 +9,7 @@ in
       haskellPackages.floskell
       ghcide
       postgresql
+      dbmate
     ];
     NIX_PATH = "nixpkgs=${pkgs.path}";
   }
