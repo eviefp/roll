@@ -15,6 +15,9 @@ test:
 ghcid:
 	ghcid -a -c "stack ghci $(package):lib --test --ghci-options='-fobject-code -fno-warn-unused-do-bind -Wno-type-defaults' --main-is $(package):$(package)"
 
+format:
+	find src -name "*.hs" -exec floskell {} \;
+
 postgres:
 	nix-shell ./postgres-shell.nix
 

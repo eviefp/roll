@@ -41,7 +41,7 @@
     , "let": "vertical"
     , "list-comp": "flex"
     , "record": "vertical"
-    , "type": "flex"
+    , "type": "vertical"
     }
   , "indent":
     { "onside": 4
@@ -49,7 +49,7 @@
     , "where": 2
     , "case": "indent-by 4"
     , "class": "indent-by 4"
-    , "do": "indent-by 4"
+    , "do": "indent-by 0"
     , "export-spec-list": "indent-by 4"
     , "if": "indent-by 4"
     , "import-spec-list": "indent-by 4"
@@ -72,7 +72,11 @@
     , "where": true
     }
   , "group":
-    {
+    { "share in expression":
+      { "force-linebreak": false
+      , "spaces": "after"
+      , "linebreaks": "none"
+      }
     }
   , "op":
     { "default":
@@ -80,15 +84,15 @@
       , "spaces": "both"
       , "linebreaks": "before"
       }
-    , ",":
-      { "force-linebreak": false
-      , "spaces": "after"
-      , "linebreaks": "before"
-      }
     , "=":
       { "force-linebreak": false
       , "spaces": "both"
       , "linebreaks": "after"
+      }
+    , ",":
+      { "force-linebreak": false
+      , "spaces": "after"
+      , "linebreaks": "before"
       }
     , "@":
       { "force-linebreak": false
@@ -96,24 +100,14 @@
       , "linebreaks": "none"
       }
     , ". in expression":
-      { "force-linebreak": false
+      { "force-linebreak": true
       , "spaces": "both"
       , "linebreaks": "before"
       }
-    , "-> in expression":
-      { "force-linebreak": false
-      , "spaces": "both"
-      , "linebreaks": "after"
-      }
-    , ". in type":
-      { "force-linebreak": false
-      , "spaces": "after"
-      , "linebreaks": "after"
-      }
     , "$":
-      { "force-linebreak": false
+      { "force-linebreak": true
       , "spaces": "both"
-      , "linebreaks": "after"
+      , "linebreaks": "before"
       }
     , "record in pattern":
       { "force-linebreak": true
@@ -125,21 +119,26 @@
       , "spaces": "after"
       , "linebreaks": "after"
       }
+    , "= in declaration":
+      { "force-linebreak": false
+      , "spaces": "before"
+      , "linebreaks": "after"
+      }
     , ":: in declaration":
-        { "force-linebreak": true
-        , "spaces": "after"
-        , "linebreaks": "before"
-        }
+      { "force-linebreak": true
+      , "spaces": "after"
+      , "linebreaks": "before"
+      }
     , ":- in type":
-        { "force-linebreak": true
-        , "spaces": "after"
-        , "linebreaks": "before"
-        }
+      { "force-linebreak": true
+      , "spaces": "after"
+      , "linebreaks": "before"
+      }
     , ":> in type":
-        { "force-linebreak": true
-        , "spaces": "after"
-        , "linebreaks": "before"
-        }
+      { "force-linebreak": true
+      , "spaces": "after"
+      , "linebreaks": "before"
+      }
     }
   , "options":
     { "align-sum-type-decl": true

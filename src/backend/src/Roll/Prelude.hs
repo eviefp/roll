@@ -4,10 +4,14 @@ module Roll.Prelude
     , tail
     , module Data.Proxy
     , module GHC.Generics
+    , Text
     ) where
 
 import           Data.Proxy
     ( Proxy(..)
+    )
+import           Data.Text
+    ( Text
     )
 
 import           GHC.Generics
@@ -46,14 +50,16 @@ import           Prelude
            )
 
 head
-    :: [ a ] -> Maybe a
+    :: [ a ]
+    -> Maybe a
 head =
     \case
         []      -> Nothing
         (x : _) -> Just x
 
 tail
-    :: [ a ] -> Maybe [ a ]
+    :: [ a ]
+    -> Maybe [ a ]
 tail =
     \case
         []       -> Nothing

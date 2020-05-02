@@ -23,16 +23,27 @@ dependencies:
 - base >= 4.7 && < 5
 - bytestring
 - containers
+- esqueleto
 - generic-lens
 - lens
+- monad-control
+- monad-logger
+- mtl
+- persistent
+- persistent-postgresql
+- persistent-template
+- postgresql-simple
 - servant
 - servant-server
+- text
+- transformers-base
 - warp
 
 default-extensions:
 - BlockArguments
 - DataKinds
 - DeriveAnyClass
+- DeriveFunctor
 - DeriveGeneric
 - DerivingVia
 - EmptyCase

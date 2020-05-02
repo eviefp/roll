@@ -18,7 +18,7 @@ data Routes route =
     deriving stock Generic
 
 handler
-    :: Routes AsServer
+    :: Routes RollT
 handler =
     Routes
     { ping = pure NoContent
