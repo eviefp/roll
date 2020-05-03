@@ -21,6 +21,7 @@ description:         Please see the README on GitHub at <https://github.com/gith
 
 dependencies:
 - base >= 4.7 && < 5
+- aeson
 - bytestring
 - containers
 - esqueleto
@@ -34,10 +35,12 @@ dependencies:
 - persistent-template
 - postgresql-simple
 - servant
+- servant-rawm
 - servant-server
 - text
 - transformers-base
 - warp
+- yaml
 
 default-extensions:
 - BlockArguments

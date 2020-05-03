@@ -1,0 +1,10 @@
+database:
+    hostname: "_env:PGHOST"
+    port: "_env:PGPORT"
+    username: "_env:PGUSER"
+    password: "_env:PGPASSWORD"
+    dbName: "_env:PGDATABASE"
+
+http:
+    httpPort: 8080
+    staticContentPath: "../static-content"

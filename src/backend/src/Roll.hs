@@ -6,6 +6,7 @@ import           Roll.Prelude
 import           Roll.Prelude.API
 
 import qualified Roll.API                    as RollAPI
+import qualified Roll.Config                 as Config
 import qualified Roll.Environment            as E
 
 import qualified Control.Monad.IO.Class      as MonadIO
@@ -20,29 +21,34 @@ import qualified Servant.Server.Generic      as GServant
 startApp
     :: IO ()
 startApp =
-    Logger.runStderrLoggingT
-    $ Postgresql.withPostgresqlPool connectionString 10
-    $ \connectionPool -> do
-        env <- MonadIO.liftIO
-            $ E.readEnvironment connectionPool
-        MonadIO.liftIO
-            $ Warp.run 8080
-            $ GServant.genericServeT (hoist env) RollAPI.handler
+    do
+        config <- Config.read
+        Logger.runStderrLoggingT
+            $ Postgresql.withPostgresqlPool (connectionString config) 10
+            $ \connectionPool -> do
+                env <- MonadIO.liftIO
+                    $ E.read config connectionPool
+                MonadIO.liftIO
+                    $ Warp.run (config ^. field @"http" . field @"httpPort")
+                    $ GServant.genericServeT (hoist env) RollAPI.handler
   where
     hoist
         :: E.Environment -> RollAPI.RollM a -> Servant.Handler a
     hoist env (RollM rollM) = rollM `Reader.runReaderT` env
 
     connectionString
-        :: ByteString
-    connectionString = PG.postgreSQLConnectionString connectInfo
+        :: Config.Config -> ByteString
+    connectionString config =
+        PG.postgreSQLConnectionString (connectInfo config)
 
     connectInfo
-        :: PG.ConnectInfo
-    connectInfo =
+        :: Config.Config -> PG.ConnectInfo
+    connectInfo config =
         PG.defaultConnectInfo
-        { PG.connectUser     = "roll"
-        , PG.connectPassword = "roll"
-        , PG.connectDatabase = "roll"
+        { PG.connectHost     = config ^. field @"database" . field @"hostname"
+        , PG.connectPort     = config ^. field @"database" . field @"port"
+        , PG.connectUser     = config ^. field @"database" . field @"username"
+        , PG.connectPassword = config ^. field @"database" . field @"password"
+        , PG.connectDatabase = config ^. field @"database" . field @"dbName"
         }
 

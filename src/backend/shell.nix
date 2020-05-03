@@ -12,4 +12,5 @@ in
       dbmate
     ];
     NIX_PATH = "nixpkgs=${pkgs.path}";
+    inherit (import ./exports.nix) PGHOST PGPORT PGDATABASE PGUSER PGPASSWORD DATABASE_URL;
   }

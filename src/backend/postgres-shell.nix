@@ -4,28 +4,19 @@ in
   pkgs.mkShell rec {
     nativeBuildInputs = [ pkgs.postgresql pkgs.dbmate ];
     NIX_PATH = "nixpkgs=${pkgs.path}";
+    inherit (import ./exports.nix) PGHOST PGPORT PGDATABASE PGUSER PGPASSWORD DATABASE_URL;
     shellHook = ''
-      function load_pg() {
-        export PGHOST=localhost
-        export PGPORT=5432
-        export PGDATABASE=roll
-        export PGUSER=roll
-        export PGPASSWORD=roll
-        export DATABASE_URL=postgres://roll:roll@127.0.0.1:5432/roll?sslmode=disable
-      }
-
-      function start_pg() {
-        load_pg
+      function start() {
         ${pgutil.start_pg} || echo "PG start failed"
         dbmate up
       }
 
-      function stop_pg() {
+      function stop() {
         ${pgutil.stop_pg}
         rm -rf .pgdata
       }
 
-      function restart_pg() {
+      function restart() {
           stop_pg
           start_pg
       }

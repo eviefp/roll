@@ -32,6 +32,7 @@ import           Servant.API.Generic
     )
 import           Servant.Server
     ( Server
+    , ServerT
     )
 import qualified Servant.Server              as Servant
 import           Servant.Server.Generic

@@ -6,10 +6,19 @@ module Roll.Prelude
     , module GHC.Generics
     , Text
     , ByteString
+    , module Control.Lens
+    , module Data.Generics.Product.Fields
     ) where
 
+import           Control.Lens
+    ( (^.)
+    , view
+    )
 import           Data.ByteString
     ( ByteString
+    )
+import           Data.Generics.Product.Fields
+    ( field
     )
 import           Data.Proxy
     ( Proxy(..)
