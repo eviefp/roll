@@ -21,7 +21,4 @@ format:
 postgres:
 	nix-shell ./postgres-shell.nix
 
-dev-deps:
-	stack build ghcid
-
-.PHONY : build build-dirty run install ghci test test-ghci ghcid dev-deps
+.PHONY : build ghci test ghcid postgres format
