@@ -18,8 +18,7 @@ import           Database.Persist.Types
 
 schema
     :: [ EntityDef ]
-schema =
-    [persistLowerCase|
+schema = [persistLowerCase|
 Quote
     qid Int
     text Text

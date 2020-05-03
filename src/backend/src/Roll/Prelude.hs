@@ -5,19 +5,21 @@ module Roll.Prelude
     , module Data.Proxy
     , module GHC.Generics
     , Text
+    , ByteString
     ) where
 
+import           Data.ByteString
+    ( ByteString
+    )
 import           Data.Proxy
     ( Proxy(..)
     )
 import           Data.Text
     ( Text
     )
-
 import           GHC.Generics
     ( Generic
     )
-
 import           Prelude
     hiding ( (!!)
            , (^)
@@ -50,16 +52,14 @@ import           Prelude
            )
 
 head
-    :: [ a ]
-    -> Maybe a
+    :: [ a ] -> Maybe a
 head =
     \case
         []      -> Nothing
         (x : _) -> Just x
 
 tail
-    :: [ a ]
-    -> Maybe [ a ]
+    :: [ a ] -> Maybe [ a ]
 tail =
     \case
         []       -> Nothing

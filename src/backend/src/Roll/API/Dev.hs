@@ -19,7 +19,4 @@ data Routes route =
 
 handler
     :: Routes RollT
-handler =
-    Routes
-    { ping = pure NoContent
-    }
+handler = Routes { ping = pure NoContent }

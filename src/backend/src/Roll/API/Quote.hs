@@ -21,24 +21,14 @@ data Routes route =
 
 handler
     :: Routes RollT
-handler =
-    Routes
-    { get = getQuote
-    }
+handler = Routes { get = getQuote }
 
 getQuote
-    :: Int
-    -> RollM Text
-getQuote mod =
-    go mod <$> Db.run Db.getQuotes
+    :: Int -> RollM Text
+getQuote mod = go mod <$> Db.run Db.getQuotes
   where
     go
-        :: Int
-        -> [ Text ]
-        -> Text
-    go _ []       =
-        "No quotes!"
-    go 0 (x : _)  =
-        x
-    go m (x : xs) =
-        go (m - 1) (xs ++ [ x ])
+        :: Int -> [ Text ] -> Text
+    go _ []       = "No quotes!"
+    go 0 (x : _)  = x
+    go m (x : xs) = go (m - 1) (xs ++ [ x ])

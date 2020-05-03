@@ -11,11 +11,12 @@ module Roll.Prelude.API
 
 import           Roll.Prelude
 
+import qualified Roll.Environment            as E
+
 import qualified Control.Monad.Base          as Base
 import qualified Control.Monad.IO.Class      as MonadIO
 import qualified Control.Monad.Reader        as Reader
 import qualified Control.Monad.Trans.Control as Control
-
 import           Servant.API
     ( (:>)
     , Capture
@@ -40,8 +41,6 @@ import           Servant.Server.Generic
     , genericServerT
     )
 
-import qualified Roll.Environment            as E
-
 newtype RollM a =
     RollM
     { unRollM
@@ -51,5 +50,4 @@ newtype RollM a =
                      , Reader.MonadReader E.Environment, MonadIO.MonadIO
                      , Base.MonadBase IO, Control.MonadBaseControl IO )
 
-type RollT =
-    AsServerT RollM
+type RollT = AsServerT RollM

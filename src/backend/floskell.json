@@ -31,17 +31,17 @@
     , "overfull-once": 999999
     }
   , "layout":
-    { "app": "flex"
+    { "app": "try-oneline"
     , "con-decls": "vertical"
-    , "declaration": "vertical"
+    , "declaration": "try-oneline"
     , "export-spec-list": "vertical"
     , "if": "flex"
     , "import-spec-list": "vertical"
-    , "infix-app": "flex"
+    , "infix-app": "try-oneline"
     , "let": "vertical"
     , "list-comp": "flex"
-    , "record": "vertical"
-    , "type": "vertical"
+    , "record": "try-oneline"
+    , "type": "try-oneline"
     }
   , "indent":
     { "onside": 4
@@ -49,7 +49,7 @@
     , "where": 2
     , "case": "indent-by 4"
     , "class": "indent-by 4"
-    , "do": "indent-by 0"
+    , "do": "indent-by 4"
     , "export-spec-list": "indent-by 4"
     , "if": "indent-by 4"
     , "import-spec-list": "indent-by 4"
@@ -100,6 +100,11 @@
       , "linebreaks": "none"
       }
     , ". in expression":
+      { "force-linebreak": false
+      , "spaces": "both"
+      , "linebreaks": "before"
+      }
+    , ">>= in expression":
       { "force-linebreak": true
       , "spaces": "both"
       , "linebreaks": "before"
@@ -121,12 +126,12 @@
       }
     , "= in declaration":
       { "force-linebreak": false
-      , "spaces": "before"
+      , "spaces": "both"
       , "linebreaks": "after"
       }
     , ":: in declaration":
       { "force-linebreak": true
-      , "spaces": "after"
+      , "spaces": "both"
       , "linebreaks": "before"
       }
     , ":- in type":
@@ -136,6 +141,16 @@
       }
     , ":> in type":
       { "force-linebreak": true
+      , "spaces": "after"
+      , "linebreaks": "before"
+      }
+    , ". in type":
+      { "force-linebreak": true
+      , "spaces": "after"
+      , "linebreaks": "before"
+      }
+    , "-> in declaration":
+      { "force-linebreak": false
       , "spaces": "after"
       , "linebreaks": "before"
       }
@@ -149,11 +164,11 @@
       [ { "prefixes": [ "Roll.Prelude" ]
         , "order": "grouped"
         }
-      , { "prefixes": [ "" ]
-        , "order": "grouped"
-        }
       , { "prefixes": [ "Roll" ]
         , "order": "grouped"
+        }
+      , { "prefixes": [ "" ]
+        , "order": "sorted"
         }
       ]
     , "sort-pragmas": true

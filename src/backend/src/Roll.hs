@@ -5,28 +5,24 @@ module Roll
 import           Roll.Prelude
 import           Roll.Prelude.API
 
+import qualified Roll.API                    as RollAPI
+import qualified Roll.Environment            as E
+
 import qualified Control.Monad.IO.Class      as MonadIO
 import qualified Control.Monad.Logger        as Logger
 import qualified Control.Monad.Reader        as Reader
-
 import qualified Database.Persist.Postgresql as Postgresql
 import qualified Database.PostgreSQL.Simple  as PG
-
 import qualified Network.Wai.Handler.Warp    as Warp
-
 import qualified Servant                     as Servant
 import qualified Servant.Server.Generic      as GServant
-
-import qualified Roll.API                    as RollAPI
-import qualified Roll.Environment            as E
 
 startApp
     :: IO ()
 startApp =
-    do
     Logger.runStderrLoggingT
-        $ Postgresql.withPostgresqlPool connectionString 10
-        $ \connectionPool -> do
+    $ Postgresql.withPostgresqlPool connectionString 10
+    $ \connectionPool -> do
         env <- MonadIO.liftIO
             $ E.readEnvironment connectionPool
         MonadIO.liftIO
@@ -34,17 +30,16 @@ startApp =
             $ GServant.genericServeT (hoist env) RollAPI.handler
   where
     hoist
-        :: E.Environment
-        -> RollAPI.RollM a
-        -> Servant.Handler a
-    hoist env =
-        (`Reader.runReaderT` env)
-        . unRollM
+        :: E.Environment -> RollAPI.RollM a -> Servant.Handler a
+    hoist env (RollM rollM) = rollM `Reader.runReaderT` env
 
-    connectionString =
-        PG.postgreSQLConnectionString connectionInfo
+    connectionString
+        :: ByteString
+    connectionString = PG.postgreSQLConnectionString connectInfo
 
-    connectionInfo =
+    connectInfo
+        :: PG.ConnectInfo
+    connectInfo =
         PG.defaultConnectInfo
         { PG.connectUser     = "roll"
         , PG.connectPassword = "roll"

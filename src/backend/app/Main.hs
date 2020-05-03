@@ -10,5 +10,4 @@ import           Roll
 
 main
     :: IO ()
-main =
-    startApp
+main = startApp

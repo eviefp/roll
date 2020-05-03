@@ -15,11 +15,7 @@ data Environment =
     deriving stock Generic
 
 readEnvironment
-    :: Sql.ConnectionPool
-    -> IO Environment
+    :: Sql.ConnectionPool -> IO Environment
 readEnvironment connectionPool =
-    do
     pure
-        $ Environment
-        { connectionPool
-        }
+    $ Environment { connectionPool }
