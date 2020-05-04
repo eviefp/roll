@@ -18,17 +18,17 @@ SET default_with_oids = false;
 --
 
 CREATE TABLE public.category (
-    id integer NOT NULL,
+    cid integer NOT NULL,
     slug character varying(32) NOT NULL,
     name text NOT NULL
 );
 
 
 --
--- Name: category_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+-- Name: category_cid_seq; Type: SEQUENCE; Schema: public; Owner: -
 --
 
-CREATE SEQUENCE public.category_id_seq
+CREATE SEQUENCE public.category_cid_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -38,10 +38,10 @@ CREATE SEQUENCE public.category_id_seq
 
 
 --
--- Name: category_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+-- Name: category_cid_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
 --
 
-ALTER SEQUENCE public.category_id_seq OWNED BY public.category.id;
+ALTER SEQUENCE public.category_cid_seq OWNED BY public.category.cid;
 
 
 --
@@ -84,10 +84,10 @@ CREATE TABLE public.schema_migrations (
 
 
 --
--- Name: category id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: category cid; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY public.category ALTER COLUMN id SET DEFAULT nextval('public.category_id_seq'::regclass);
+ALTER TABLE ONLY public.category ALTER COLUMN cid SET DEFAULT nextval('public.category_cid_seq'::regclass);
 
 
 --
@@ -102,7 +102,7 @@ ALTER TABLE ONLY public.quote ALTER COLUMN qid SET DEFAULT nextval('public.quote
 --
 
 ALTER TABLE ONLY public.category
-    ADD CONSTRAINT category_pkey PRIMARY KEY (id);
+    ADD CONSTRAINT category_pkey PRIMARY KEY (cid);
 
 
 --

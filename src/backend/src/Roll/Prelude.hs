@@ -1,20 +1,26 @@
 module Roll.Prelude
     ( module Prelude
+    , ByteString
+    , Text
     , head
     , tail
+    , module Control.Lens
+    , module Control.Monad
+    , module Data.Generics.Product.Fields
     , module Data.Proxy
     , module GHC.Generics
-    , Text
-    , ByteString
-    , module Control.Lens
-    , module Data.Generics.Product.Fields
+    , module System.FilePath.Posix
     ) where
 
 import           Control.Lens
     ( (^.)
     , view
     )
-import           Data.ByteString
+import           Control.Monad
+    ( (<=<)
+    , (>=>)
+    )
+import           Data.ByteString.Lazy
     ( ByteString
     )
 import           Data.Generics.Product.Fields
@@ -59,6 +65,9 @@ import           Prelude
            , tail
            , toEnum
            )
+import           System.FilePath.Posix
+    ( (</>)
+    )
 
 head
     :: [ a ] -> Maybe a

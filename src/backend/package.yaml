@@ -25,7 +25,9 @@ dependencies:
 - bytestring
 - containers
 - esqueleto
+- filepath
 - generic-lens
+- http-media
 - lens
 - monad-control
 - monad-logger
