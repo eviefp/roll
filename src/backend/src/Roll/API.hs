@@ -8,6 +8,7 @@ module Roll.API
 import           Roll.Prelude
 import           Roll.Prelude.API
 
+import qualified Roll.API.Category      as Category
 import qualified Roll.API.CategoryRoute as CategoryRoute
 import qualified Roll.API.Dev           as Dev
 import qualified Roll.API.Quote         as Quote
@@ -23,6 +24,10 @@ data Routes route =
           :: route
           :- "quote"
           :> ToServantApi Quote.Routes
+    , category
+          :: route
+          :- "category"
+          :> ToServantApi Category.Routes
     , categoryRoute
           :: route
           :- "categorie"
@@ -39,6 +44,7 @@ handler =
     Routes
     { dev           = genericServerT Dev.handler
     , quote         = genericServerT Quote.handler
+    , category      = genericServerT Category.handler
     , categoryRoute = genericServerT CategoryRoute.handler
     , static        = Static.handler
     }
