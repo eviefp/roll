@@ -14,6 +14,37 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
+-- Name: category; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.category (
+    id integer NOT NULL,
+    slug character varying(32) NOT NULL,
+    name text NOT NULL
+);
+
+
+--
+-- Name: category_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.category_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: category_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.category_id_seq OWNED BY public.category.id;
+
+
+--
 -- Name: quote; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -53,10 +84,25 @@ CREATE TABLE public.schema_migrations (
 
 
 --
+-- Name: category id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.category ALTER COLUMN id SET DEFAULT nextval('public.category_id_seq'::regclass);
+
+
+--
 -- Name: quote qid; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.quote ALTER COLUMN qid SET DEFAULT nextval('public.quote_qid_seq'::regclass);
+
+
+--
+-- Name: category category_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.category
+    ADD CONSTRAINT category_pkey PRIMARY KEY (id);
 
 
 --
@@ -76,6 +122,14 @@ ALTER TABLE ONLY public.schema_migrations
 
 
 --
+-- Name: category slug_unique; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.category
+    ADD CONSTRAINT slug_unique UNIQUE (slug);
+
+
+--
 -- PostgreSQL database dump complete
 --
 
@@ -85,4 +139,5 @@ ALTER TABLE ONLY public.schema_migrations
 --
 
 INSERT INTO public.schema_migrations (version) VALUES
-    ('20200502000210');
+    ('20200502000210'),
+    ('20200504201436');
