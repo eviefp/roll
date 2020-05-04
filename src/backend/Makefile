@@ -12,13 +12,21 @@ ghci:
 test:
 	$(stack) test $(package)
 
+run: build pg-restart
+	$(stack) exec -- $(package)
+
 ghcid:
 	ghcid -a -c "stack ghci $(package):lib --test --ghci-options='-fobject-code -fno-warn-unused-do-bind -Wno-type-defaults' --main-is $(package):$(package)"
 
 format:
 	find src -name "*.hs" -exec floskell {} \;
 
-postgres:
-	nix-shell ./postgres-shell.nix
+pg-restart: pg-stop pg-start
 
-.PHONY : build ghci test ghcid postgres format
+pg-start:
+	../../script/pg-start.sh
+
+pg-stop:
+	../../script/pg-stop.sh
+
+.PHONY : build ghci test ghcid pg-start pg-stop pg-restart format

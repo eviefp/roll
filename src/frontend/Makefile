@@ -1,4 +1,9 @@
-bundle:
-	spago bundle-app --to ../static-content/index.js
+output = ../static-content/index.js
 
-.PHONY: bundle
+build:
+	spago build
+
+bundle:
+	spago bundle-app --to ${output}
+
+.PHONY: bundle build

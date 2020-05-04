@@ -10,4 +10,6 @@ import           Roll
 
 main
     :: IO ()
-main = startApp
+main =
+    putStrLn "Starting Roll..."
+    *> startApp
