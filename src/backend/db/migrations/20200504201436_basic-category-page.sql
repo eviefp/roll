@@ -1,6 +1,6 @@
 -- migrate:up
 create table "category"
-    ( "id" serial primary key
+    ( "cid" serial primary key
     , "slug" varchar(32) not null
     , "name" text not null
     , constraint slug_unique unique ("slug")

@@ -18,11 +18,20 @@ import           Database.Persist.Types
 
 schema
     :: [ EntityDef ]
-schema = [persistLowerCase|
+schema =
+    [persistLowerCase|
 Quote
     qid Int
     text Text
 
     Primary qid
+
+Category
+    cid Int
+    slug String
+    name Text
+
+    Primary cid
+    UniqueSlug slug
 |]
 
