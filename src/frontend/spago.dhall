@@ -12,6 +12,7 @@ You can edit this file as you like.
   , "psci-support"
   , "random"
   , "simple-json"
+  , "strings"
   , "web-dom"
   , "web-html"
   ]

@@ -12,6 +12,7 @@ import qualified Roll.Environment            as E
 import qualified Control.Monad.IO.Class      as MonadIO
 import qualified Control.Monad.Logger        as Logger
 import qualified Control.Monad.Reader        as Reader
+import qualified Data.ByteString             as BS
 import qualified Database.Persist.Postgresql as Postgresql
 import qualified Database.PostgreSQL.Simple  as PG
 import qualified Network.Wai.Handler.Warp    as Warp
@@ -37,7 +38,7 @@ startApp =
     hoist env (RollM rollM) = rollM `Reader.runReaderT` env
 
     connectionString
-        :: Config.Config -> ByteString
+        :: Config.Config -> BS.ByteString
     connectionString config =
         PG.postgreSQLConnectionString (connectInfo config)
 
