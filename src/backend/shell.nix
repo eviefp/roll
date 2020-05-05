@@ -1,5 +1,5 @@
 let
-  inherit (import ../..) pkgs ghcide postgres;
+  inherit (import ../..) pkgs ghcide hlint postgres;
 in
   pkgs.mkShell rec {
     nativeBuildInputs = with pkgs; [
@@ -8,6 +8,7 @@ in
       haskellPackages.ghcid_0_8_6
       haskellPackages.floskell
       ghcide
+      hlint
       postgresql
       dbmate
     ];
