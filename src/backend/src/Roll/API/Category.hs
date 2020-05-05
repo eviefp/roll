@@ -9,7 +9,7 @@ import           Roll.Prelude.API
 import qualified Roll.Database          as Db
 import qualified Roll.Database.Category as Category
 
-data Routes route =
+newtype Routes route =
     Routes
     { get
           :: route

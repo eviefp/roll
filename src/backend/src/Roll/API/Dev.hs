@@ -6,7 +6,7 @@ module Roll.API.Dev
 import           Roll.Prelude
 import           Roll.Prelude.API
 
-data Routes route =
+newtype Routes route =
     Routes
     { ping
           :: route

@@ -9,7 +9,7 @@ import           Roll.Prelude.API
 import qualified Roll.Database       as Db
 import qualified Roll.Database.Quote as Quote
 
-data Routes route =
+newtype Routes route =
     Routes
     { get
           :: route
@@ -32,4 +32,4 @@ getQuote mod = go mod <$> Db.run Quote.get
         :: Int -> [ Quote.Quote ] -> Text
     go _ []       = "No quotes!"
     go 0 (x : _)  = Quote.getQuote x
-    go m (x : xs) = go (m - 1) (xs ++ [ x ])
+    go m (x : xs) = go (m - 1) (xs <> [ x ])

@@ -25,12 +25,12 @@ startApp =
     do
         config <- Config.read
         Logger.runStderrLoggingT
-            $ Postgresql.withPostgresqlPool (connectionString config) 10
+            . Postgresql.withPostgresqlPool (connectionString config) 10
             $ \connectionPool -> do
                 env <- MonadIO.liftIO
                     $ E.read config connectionPool
                 MonadIO.liftIO
-                    $ Warp.run (config ^. field @"http" . field @"httpPort")
+                    . Warp.run (config ^. field @"http" . field @"httpPort")
                     $ GServant.genericServeT (hoist env) RollAPI.handler
   where
     hoist

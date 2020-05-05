@@ -12,7 +12,7 @@ import qualified Roll.Database.Category as Category
 import qualified Control.Monad.IO.Class as MonadIO
 import qualified Data.ByteString.Lazy   as BS
 
-data Routes route =
+newtype Routes route =
     Routes
     { get
           :: route
