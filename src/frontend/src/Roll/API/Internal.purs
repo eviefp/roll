@@ -19,6 +19,7 @@ type URL = String
 data Error
     = AffjaxError Affjax.Error
     | ParsingError MultipleErrors
+    | UnknownError
 
 get :: forall a. Json.ReadForeign a => URL -> ExceptT Error Aff a
 get url =

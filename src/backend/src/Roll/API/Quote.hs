@@ -6,7 +6,8 @@ module Roll.API.Quote
 import           Roll.Prelude
 import           Roll.Prelude.API
 
-import qualified Roll.Database    as Db
+import qualified Roll.Database       as Db
+import qualified Roll.Database.Quote as Quote
 
 data Routes route =
     Routes
@@ -25,10 +26,10 @@ handler = Routes { get = getQuote }
 
 getQuote
     :: Int -> RollM Text
-getQuote mod = go mod <$> Db.run Db.getQuotes
+getQuote mod = go mod <$> Db.run Quote.get
   where
     go
-        :: Int -> [ Text ] -> Text
+        :: Int -> [ Quote.Quote ] -> Text
     go _ []       = "No quotes!"
-    go 0 (x : _)  = x
+    go 0 (x : _)  = Quote.getQuote x
     go m (x : xs) = go (m - 1) (xs ++ [ x ])
