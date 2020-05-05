@@ -29,4 +29,5 @@ newtype Name =
 getBySlug
     :: Slug -> I.SqlQuery (Maybe Name)
 getBySlug (Slug slug) =
-    I.mapEntity (Name . I.categoryName) <$> Db.getBy (I.UniqueSlug slug)
+    I.mapEntity (Name . I.categoryName)
+    <$> Db.getBy (I.UniqueCategorySlug slug)

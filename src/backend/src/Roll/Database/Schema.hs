@@ -32,6 +32,25 @@ Category
     name Text
 
     Primary cid
-    UniqueSlug slug
+    UniqueCategorySlug slug
+
+Supplier
+    sid Int
+    name Text
+    url Text
+    description Text Maybe
+
+    Primary sid
+
+Product
+    pid Int
+    slug String
+    cid CategoryId
+    sid SupplierId
+    name Text
+    description Text Maybe
+
+    Primary pid
+    UniqueProductSlug slug
 |]
 
