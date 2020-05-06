@@ -38,4 +38,11 @@ getBySlug = maybe (throwError err404) pure <=< Db.run . Category.getBySlug
 
 getProducts
     :: Category.Slug -> RollM [ Product.Product ]
-getProducts = Db.run . Product.getByCategory
+getProducts = throwIfEmpty <=< Db.run . Product.getByCategory
+  where
+    throwIfEmpty
+        :: [ Product.Product ] -> RollM [ Product.Product ]
+    throwIfEmpty =
+        \case
+            [] -> throwError err404
+            xs -> pure xs

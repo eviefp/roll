@@ -16,6 +16,12 @@ create table "product"
     , constraint product_slug_unique unique ("slug")
     );
 
+insert into supplier ("name", "url", "description") values
+    ( 'default', 'n/a', 'nope' );
+
+insert into product ("slug", "cid", "sid", "name", "description") values
+    ( 'emu', 1, 1, 'Emu Emu', 'Emu is Emu Emu' );
+
 -- migrate:down
 drop table "product";
 
