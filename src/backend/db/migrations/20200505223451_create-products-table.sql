@@ -20,7 +20,8 @@ insert into supplier ("name", "url", "description") values
     ( 'default', 'n/a', 'nope' );
 
 insert into product ("slug", "cid", "sid", "name", "description") values
-    ( 'emu', 1, 1, 'Emu Emu', 'Emu is Emu Emu' );
+    ( 'emu', 1, 1, 'Emu Emu', 'Emu is Emu Emu' ),
+    ( 'nom', 1, 1, 'Nom Noms', null );
 
 -- migrate:down
 drop table "product";
