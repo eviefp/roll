@@ -46,7 +46,7 @@ Product
     pid Int
     slug String
     cid CategoryId
-    sid SupplierId
+    sid SupplierId Maybe
     name Text
     description Text Maybe
 
