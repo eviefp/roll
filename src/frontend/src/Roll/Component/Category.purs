@@ -16,8 +16,10 @@ import Effect.Aff (Aff)
 import Effect.Aff.Class (class MonadAff)
 import Halogen as H
 import Halogen.HTML as HH
+import Halogen.HTML.Properties as HP
 import Roll.API.Category as Category
 import Roll.API.Internal (Error(..))
+import Roll.Component.Internal as I
 import Web.HTML as HTML
 import Web.HTML.Location as Location
 import Web.HTML.Window as Window
@@ -26,12 +28,15 @@ type HTML m = H.ComponentHTML Action () m
 
 data Action = Initialize
 
-type State = String
+type State =
+    { title :: Maybe String
+    , products :: Maybe (Array Category.Product)
+    }
 
 component :: forall q o m. MonadAff m => H.Component HH.HTML q Unit o m
 component =
     H.mkComponent
-    { initialState: const "loading category..."
+    { initialState: const { title: Nothing, products: Nothing }
     , render
     , eval: H.mkEval H.defaultEval
         { handleAction = handleAction
@@ -40,16 +45,38 @@ component =
     }
 
 render :: forall m. State -> HTML m
-render = HH.text
+render {title: Just t, products: Just p} =
+    HH.div_
+        [ HH.text t
+        , HH.div_ $ renderProduct <$> p
+        ]
+render _ = HH.text "loading..."
+
+renderProduct :: forall m. Category.Product -> HTML m
+renderProduct { slug, name, description } =
+    HH.div_
+        [ HH.a
+            [ HP.href $ "/produs/" <> slug
+            ]
+            [ HH.text name
+            ]
+        , HH.p_
+            [ I.maybeElement description HH.text
+            ]
+        ]
 
 handleAction :: forall m o. MonadAff m => Action -> H.HalogenM State Action () o m Unit
 handleAction = case _ of
     Initialize ->
-        (H.liftAff <<< runExceptT $ getSlug >>= Category.getBySlug)
-            >>= case _ of
-                Left err -> pure "Could not load slug."
-                Right q  -> pure q
-            >>= H.put
+        ( H.liftAff $ runExceptT do
+            slug <- getSlug
+            title <- Category.getBySlug slug
+            products <- Category.getProducts slug
+            pure { products: Just products, title: Just title }
+        )
+        >>= case _ of
+            Left _ -> mempty
+            Right st -> H.put st
 
 getSlug :: ExceptT Error Aff String
 getSlug = ExceptT $ note UnknownError <<< go <$> H.liftEffect href

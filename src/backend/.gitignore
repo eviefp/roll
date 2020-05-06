@@ -2,4 +2,4 @@
 backend.cabal
 *~
 .pgdata
-./db/schema.sql
+db/schema.sql
