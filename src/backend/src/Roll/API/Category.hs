@@ -17,7 +17,7 @@ data Routes route =
           :- Summary "Get category"
           :> Description "Get category name."
           :> Capture "slug" Category.Slug
-          :> Get '[JSON] Category.Name
+          :> Get '[JSON] Text
     , products
           :: route
           :- Summary "Get products"
@@ -33,7 +33,7 @@ handler
 handler = Routes { get = getBySlug, products = getProducts }
 
 getBySlug
-    :: Category.Slug -> RollM Category.Name
+    :: Category.Slug -> RollM Text
 getBySlug = maybe (throwError err404) pure <=< Db.run . Category.getBySlug
 
 getProducts

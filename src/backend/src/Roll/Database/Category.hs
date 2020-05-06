@@ -1,6 +1,5 @@
 module Roll.Database.Category
     ( getBySlug
-    , Name(getName)
     , Slug(getSlug)
     ) where
 
@@ -19,15 +18,7 @@ newtype Slug =
     }
     deriving newtype ( Aeson.ToJSON, Servant.FromHttpApiData )
 
-newtype Name =
-    Name
-    { getName
-          :: Text
-    }
-    deriving newtype ( Aeson.ToJSON )
-
 getBySlug
-    :: Slug -> I.SqlQuery (Maybe Name)
+    :: Slug -> I.SqlQuery (Maybe Text)
 getBySlug (Slug slug) =
-    I.mapEntity (Name . I.categoryName)
-    <$> Db.getBy (I.UniqueCategorySlug slug)
+    I.mapEntity I.categoryName <$> Db.getBy (I.UniqueCategorySlug slug)
