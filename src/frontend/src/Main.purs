@@ -12,6 +12,7 @@ import Halogen.HTML as HH
 import Halogen.VDom.Driver as VDom
 import Roll.Component.Hello as Hello
 import Roll.Component.Category as Category
+import Roll.Component.Product as Product
 import Web.DOM.ParentNode as PN
 import Web.HTML as HTML
 import Web.HTML.HTMLDocument as Document
@@ -41,3 +42,4 @@ main :: Effect Unit
 main = HA.runHalogenAff do
     runComponent "#roll-hello"    Hello.component    unit
     runComponent "#roll-category" Category.component unit
+    runComponent "#roll-product"  Product.component unit
