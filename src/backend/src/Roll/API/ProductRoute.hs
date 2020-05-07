@@ -25,11 +25,11 @@ newtype Routes route =
 
 handler
     :: Routes RollT
-handler = Routes { get = getCategoryHtml }
+handler = Routes { get = getProductHtml }
 
-getCategoryHtml
+getProductHtml
     :: Product.Slug -> RollM ByteString
-getCategoryHtml =
+getProductHtml =
     maybe (throwError err404) (const html) <=< Db.run . Product.getBySlug
 
 html
