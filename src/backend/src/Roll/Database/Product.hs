@@ -1,5 +1,6 @@
 module Roll.Database.Product
     ( getByCategory
+    , getBySlug
     , Slug(getSlug)
     , Product(slug, name, description)
     ) where
@@ -17,6 +18,7 @@ import           Database.Esqueleto
     ( (==.)
     , (^.)
     )
+import qualified Database.Persist.Class as Db
 import qualified Servant                as Servant
 
 newtype Slug =
@@ -69,3 +71,16 @@ getByCategory categorySlug = fmap go <$> getProductsBySlug
                 , product ^. I.ProductName
                 , product ^. I.ProductDescription
                 )
+
+getBySlug
+    :: Slug -> I.SqlQuery (Maybe Product)
+getBySlug (Slug slug) = I.mapEntity go <$> Db.getBy (I.UniqueProductSlug slug)
+  where
+    go
+        :: I.Product -> Product
+    go product =
+        Product
+        { slug        = Slug (I.productSlug product)
+        , name        = I.productName product
+        , description = I.productDescription product
+        }

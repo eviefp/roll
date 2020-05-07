@@ -52,5 +52,17 @@ Product
 
     Primary pid
     UniqueProductSlug slug
+
+ProductVariant
+    pvid Int
+    pid ProductId
+    slug String
+    name Text
+    code Text
+    description Text Maybe
+
+    Primary pvid
+    UniqueProductVariantSlug slug
+    UniqueProductVariantCode code
 |]
 

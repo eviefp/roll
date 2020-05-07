@@ -10,6 +10,7 @@ module Roll.Prelude.API
     , RollM(..)
     , RollT
     , HTML
+    , throwIfEmpty
     ) where
 
 import           Roll.Prelude
@@ -77,3 +78,10 @@ instance ContentTypes.MimeUnrender HTML ByteString where
 
 instance ContentTypes.MimeRender HTML ByteString where
     mimeRender _ = id
+
+throwIfEmpty
+    :: [ a ] -> RollM [ a ]
+throwIfEmpty =
+    \case
+        [] -> throwError Servant.err404
+        xs -> pure xs
