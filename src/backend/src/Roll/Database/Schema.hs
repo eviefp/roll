@@ -48,6 +48,7 @@ Product
     cid CategoryId
     sid SupplierId Maybe
     name Text
+    price Int
     description Text Maybe
 
     Primary pid
@@ -59,6 +60,7 @@ ProductVariant
     slug String
     name Text
     code Text
+    price Int
     description Text Maybe
 
     Primary pvid

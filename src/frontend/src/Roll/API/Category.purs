@@ -17,8 +17,9 @@ getBySlug :: String -> ExceptT I.Error Aff String
 getBySlug slug = I.get $ "/category/" <> slug
 
 type Product =
-    { slug :: String
-    , name :: String
+    { slug        :: String
+    , name        :: String
+    , price       :: Int
     , description :: Maybe String
     }
 

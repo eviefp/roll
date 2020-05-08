@@ -16,6 +16,7 @@ type ProductVariant =
     { slug        :: String
     , name        :: String
     , code        :: String
+    , price       :: Int
     , description :: Maybe String
     }
 
