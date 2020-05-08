@@ -39,6 +39,7 @@ insert into product ("slug", "cid", "sid", "name", "description") values
     ( '3pliuri', 3, null , '3-pliuri', null ),
     ( 'pliu-ascuns', 3, null , 'Pliu ascuns', null ),
     ( 'fara-pliuri', 3, null , 'Banda fara pliuri', null ),
+    ( 'creion', 3, null , 'Rejansa creion', null ),
     ( 'wave', 3, null , 'Rejansa WAVE', null ),
     ( 'inele', 3, null , 'Banda cu inele', null ),
     ( 'material1', 2, null , 'Material 1', 'Un material deosebit de fin.' ),
