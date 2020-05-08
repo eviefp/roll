@@ -38,12 +38,13 @@ render { products: Just p } =
 render _ = HH.text "loading..."
 
 renderProduct :: forall m. ProductVariant.ProductVariant -> HTML m
-renderProduct { slug, name, code, description } =
+renderProduct { slug, name, code, price, description } =
     HH.div_
         [ HH.p_
             [ HH.text $ "Slug: "   <> slug
             , HH.text $ ", name: " <> name
-            , HH.text $ ", code: " <>code
+            , HH.text $ ", code: " <> code
+            , HH.text $ ", price: " <> show price
             ]
         , HH.p_
             [ I.maybeElement description HH.text

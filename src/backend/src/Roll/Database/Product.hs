@@ -34,6 +34,8 @@ data Product =
           :: Slug
     , name
           :: Text
+    , price
+          :: Int
     , description
           :: Maybe Text
     }
@@ -49,16 +51,22 @@ getByCategory categorySlug = fmap go <$> getProductsBySlug
     slug = Category.getSlug categorySlug
 
     go
-        :: ( E.Value String, E.Value Text, E.Value (Maybe Text) ) -> Product
-    go ( valueSlug, valueName, valueDesc ) =
+        :: ( E.Value String, E.Value Text, E.Value Int, E.Value (Maybe Text) )
+        -> Product
+    go ( valueSlug, valueName, valuePrice, valueDesc ) =
         Product
         { slug        = Slug (E.unValue valueSlug)
         , name        = E.unValue valueName
+        , price       = E.unValue valuePrice
         , description = E.unValue valueDesc
         }
 
     getProductsBySlug
-        :: I.SqlQuery [ ( E.Value String, E.Value Text, E.Value (Maybe Text) )
+        :: I.SqlQuery [ ( E.Value String
+                        , E.Value Text
+                        , E.Value Int
+                        , E.Value (Maybe Text)
+                        )
                       ]
     getProductsBySlug =
         E.select
@@ -69,6 +77,7 @@ getByCategory categorySlug = fmap go <$> getProductsBySlug
             return
                 ( product ^. I.ProductSlug
                 , product ^. I.ProductName
+                , product ^. I.ProductPrice
                 , product ^. I.ProductDescription
                 )
 
@@ -82,5 +91,6 @@ getBySlug (Slug slug) = I.mapEntity go <$> Db.getBy (I.UniqueProductSlug slug)
         Product
         { slug        = Slug (I.productSlug product)
         , name        = I.productName product
+        , price       = I.productPrice product
         , description = I.productDescription product
         }

@@ -43,12 +43,13 @@ render {title: Just t, products: Just p} =
 render _ = HH.text "loading..."
 
 renderProduct :: forall m. Category.Product -> HTML m
-renderProduct { slug, name, description } =
+renderProduct { slug, name, price, description } =
     HH.div_
         [ HH.a
             [ HP.href $ "/produs/" <> slug
             ]
             [ HH.text name
+            , HH.text $ "de la " <> show price
             ]
         , HH.p_
             [ I.maybeElement description HH.text

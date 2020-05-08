@@ -34,6 +34,8 @@ data ProductVariant =
           :: Text
     , code
           :: Text
+    , price
+          :: Int
     , description
           :: Maybe Text
     }
@@ -49,13 +51,19 @@ getByProduct productSlug = fmap go <$> getProductVariantsBySlug
     slug = Product.getSlug productSlug
 
     go
-        :: ( E.Value String, E.Value Text, E.Value Text, E.Value (Maybe Text) )
+        :: ( E.Value String
+           , E.Value Text
+           , E.Value Text
+           , E.Value Int
+           , E.Value (Maybe Text)
+           )
         -> ProductVariant
-    go ( valueSlug, valueName, valueCode, valueDesc ) =
+    go ( valueSlug, valueName, valueCode, valuePrice, valueDesc ) =
         ProductVariant
         { slug        = Slug (E.unValue valueSlug)
         , name        = E.unValue valueName
         , code        = E.unValue valueCode
+        , price       = E.unValue valuePrice
         , description = E.unValue valueDesc
         }
 
@@ -63,6 +71,7 @@ getByProduct productSlug = fmap go <$> getProductVariantsBySlug
         :: I.SqlQuery [ ( E.Value String
                         , E.Value Text
                         , E.Value Text
+                        , E.Value Int
                         , E.Value (Maybe Text)
                         )
                       ]
@@ -79,5 +88,6 @@ getByProduct productSlug = fmap go <$> getProductVariantsBySlug
                 ( productVariant ^. I.ProductVariantSlug
                 , productVariant ^. I.ProductVariantName
                 , productVariant ^. I.ProductVariantCode
+                , productVariant ^. I.ProductVariantPrice
                 , productVariant ^. I.ProductVariantDescription
                 )
