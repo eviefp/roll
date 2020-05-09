@@ -31,7 +31,7 @@ component =
     }
 
 render :: forall m. State -> HTML m
-render = HH.text
+render t = HH.blockquote_ [ HH.text t ]
 
 handleAction :: forall m o. MonadAff m => Action -> H.HalogenM State Action () o m Unit
 handleAction = case _ of

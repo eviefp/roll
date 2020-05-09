@@ -1,6 +1,7 @@
 module Roll.Component.Internal
     ( maybeElement
     , getSlug
+    , loading
     ) where
 
 import Prelude
@@ -40,3 +41,5 @@ getSlug = ExceptT $ note UnknownError <<< go <$> liftEffect href
 href :: Effect String
 href = HTML.window >>= Window.location >>= Location.href
 
+loading :: forall p i. HH.HTML p i
+loading = HH.text "loading..."
