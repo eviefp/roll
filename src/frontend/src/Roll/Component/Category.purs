@@ -36,23 +36,35 @@ component =
 
 render :: forall m. State -> HTML m
 render {title: Just t, products: Just p} =
-    HH.div_
-        [ HH.text t
-        , HH.div_ $ renderProduct <$> p
+    HH.section_
+        [ HH.h1_
+            [ HH.text t
+            ]
+        , HH.ul_
+            $ renderProduct <$> p
         ]
-render _ = HH.text "loading..."
+render _ = I.loading
 
 renderProduct :: forall m. Category.Product -> HTML m
-renderProduct { slug, name, price, description } =
-    HH.div_
-        [ HH.a
-            [ HP.href $ "/produs/" <> slug
+renderProduct p =
+    HH.li_
+        [ HH.dt_
+            [ HH.a
+                [ HP.href $ "/produs/" <> p.slug
+                ]
+                [ HH.img
+                    [ HP.src "https://placeimg.com/250/150/architecture"
+                    ]
+                , HH.h3_
+                    [ HH.text p.name
+                    ]
+                , HH.samp_
+                    [ HH.text $ show p.price
+                    ]
+                ]
             ]
-            [ HH.text name
-            , HH.text $ "de la " <> show price
-            ]
-        , HH.p_
-            [ I.maybeElement description HH.text
+        , HH.dd_
+            [ I.maybeElement p.description HH.text
             ]
         ]
 

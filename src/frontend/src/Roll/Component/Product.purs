@@ -10,6 +10,7 @@ import Data.Maybe (Maybe(..))
 import Effect.Aff.Class (class MonadAff)
 import Halogen as H
 import Halogen.HTML as HH
+import Halogen.HTML.Properties as HP
 import Roll.API.ProductVariant as ProductVariant
 import Roll.Component.Internal as I
 
@@ -34,20 +35,29 @@ component =
 
 render :: forall m. State -> HTML m
 render { products: Just p } =
-        HH.div_ $ renderProduct <$> p
-render _ = HH.text "loading..."
+        HH.ul_ $ renderProduct <$> p
+render _ = I.loading
 
 renderProduct :: forall m. ProductVariant.ProductVariant -> HTML m
-renderProduct { slug, name, code, price, description } =
-    HH.div_
-        [ HH.p_
-            [ HH.text $ "Slug: "   <> slug
-            , HH.text $ ", name: " <> name
-            , HH.text $ ", code: " <> code
-            , HH.text $ ", price: " <> show price
+renderProduct p =
+    HH.li_
+        [ HH.dt_
+            [ HH.a
+                [ HP.href $ "/configurator/" <> p.slug
+                ]
+                [ HH.img
+                    [ HP.src "https://placeimg.com/250/150/animals"
+                    ]
+                , HH.h3_
+                    [ HH.text p.name
+                    ]
+                , HH.samp_
+                    [ HH.text $ show p.price
+                    ]
+                ]
             ]
-        , HH.p_
-            [ I.maybeElement description HH.text
+        , HH.dd_
+            [ I.maybeElement p.description HH.text
             ]
         ]
 

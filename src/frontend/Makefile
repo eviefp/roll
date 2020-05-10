@@ -1,4 +1,4 @@
-output = ../static-content/index.js
+output = ../public/js/index.js
 
 build:
 	spago build

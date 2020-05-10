@@ -7,4 +7,4 @@ database:
 
 http:
     httpPort: 8080
-    staticContentPath: "../static-content"
+    staticContentPath: "../public"
