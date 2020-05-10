@@ -44,37 +44,25 @@ data ProductVariant =
 
 getByProduct
     :: Product.Slug -> I.SqlQuery [ ProductVariant ]
-getByProduct productSlug = fmap go <$> getProductVariantsBySlug
+getByProduct productSlug = fmap (go . E.entityVal) <$> getProductVariantsBySlug
   where
     slug
         :: String
     slug = Product.getSlug productSlug
 
     go
-        :: ( E.Value String
-           , E.Value Text
-           , E.Value Text
-           , E.Value Int
-           , E.Value (Maybe Text)
-           )
-        -> ProductVariant
-    go ( valueSlug, valueName, valueCode, valuePrice, valueDesc ) =
+        :: I.ProductVariant -> ProductVariant
+    go pv =
         ProductVariant
-        { slug        = Slug (E.unValue valueSlug)
-        , name        = E.unValue valueName
-        , code        = E.unValue valueCode
-        , price       = E.unValue valuePrice
-        , description = E.unValue valueDesc
+        { slug        = Slug (I.productVariantSlug pv)
+        , name        = I.productVariantName pv
+        , code        = I.productVariantCode pv
+        , price       = I.productVariantPrice pv
+        , description = I.productVariantDescription pv
         }
 
     getProductVariantsBySlug
-        :: I.SqlQuery [ ( E.Value String
-                        , E.Value Text
-                        , E.Value Text
-                        , E.Value Int
-                        , E.Value (Maybe Text)
-                        )
-                      ]
+        :: I.SqlQuery [ E.Entity I.ProductVariant ]
     getProductVariantsBySlug =
         E.select
         $ E.from
@@ -84,10 +72,4 @@ getByProduct productSlug = fmap go <$> getProductVariantsBySlug
                  ^. I.ProductVariantPid ==. product
                  ^. I.ProductId)
             E.where_ (product ^. I.ProductSlug ==. E.val slug)
-            return
-                ( productVariant ^. I.ProductVariantSlug
-                , productVariant ^. I.ProductVariantName
-                , productVariant ^. I.ProductVariantCode
-                , productVariant ^. I.ProductVariantPrice
-                , productVariant ^. I.ProductVariantDescription
-                )
+            return productVariant
