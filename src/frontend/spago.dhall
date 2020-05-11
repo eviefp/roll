@@ -9,6 +9,7 @@ You can edit this file as you like.
   , "console"
   , "effect"
   , "halogen"
+  , "halogen-hooks"
   , "psci-support"
   , "random"
   , "simple-json"

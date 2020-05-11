@@ -5,14 +5,19 @@ module Roll.Component.Product
 import Prelude
 
 import Control.Monad.Except (runExceptT)
-import Data.Either (Either(..))
-import Data.Maybe (Maybe(..))
+import Data.Either (Either(..), note)
+import Data.Maybe (Maybe(..), maybe)
 import Effect.Aff.Class (class MonadAff)
 import Halogen as H
 import Halogen.HTML as HH
 import Halogen.HTML.Properties as HP
+import Halogen.Hooks as Hooks
+import Roll.API.Component.Hook.UseAPI as UseAPI
+import Roll.API.Component.Hook.UseSlug as UseSlug
+import Roll.API.Internal as API
 import Roll.API.ProductVariant as ProductVariant
 import Roll.Component.Internal as I
+import Type.Prelude (Proxy(..))
 
 type HTML m = H.ComponentHTML Action () m
 
@@ -23,22 +28,31 @@ type State =
     }
 
 component :: forall q o m. MonadAff m => H.Component HH.HTML q Unit o m
-component =
-    H.mkComponent
-    { initialState: const { products: Nothing }
-    , render
-    , eval: H.mkEval H.defaultEval
-        { handleAction = handleAction
-        , initialize = Just Initialize
-        }
-    }
+component = Hooks.component \_ _ -> Hooks.do
+    slug <- UseSlug.hook
+    products <-
+        case slug of
+            Nothing -> Hooks.pure Nothing
+            Just s  -> it s
+    Hooks.pure $ render { products: products }
+  where
+    p :: Proxy (Array (ProductVariant.ProductVariant))
+    p = Proxy
 
-render :: forall m. State -> HTML m
+    it
+        :: String
+        -> Hooks.Hook
+            m
+            (UseAPI.UseAPI (Array ProductVariant.ProductVariant))
+            (Maybe (Array ProductVariant.ProductVariant))
+    it s = UseAPI.hook p (ProductVariant.getProducts s)
+
+render :: forall p i. State -> HH.HTML p i
 render { products: Just p } =
         HH.ul_ $ renderProduct <$> p
 render _ = I.loading
 
-renderProduct :: forall m. ProductVariant.ProductVariant -> HTML m
+renderProduct :: forall p i. ProductVariant.ProductVariant -> HH.HTML p i
 renderProduct p =
     HH.li_
         [ HH.dt_
@@ -60,12 +74,4 @@ renderProduct p =
             [ I.maybeElement p.description HH.text
             ]
         ]
-
-handleAction :: forall m o. MonadAff m => Action -> H.HalogenM State Action () o m Unit
-handleAction = case _ of
-    Initialize ->
-        ( H.liftAff <<< runExceptT $ I.getSlug >>= ProductVariant.getProducts)
-        >>= case _ of
-            Left _ -> mempty
-            Right st -> H.put { products: Just st }
 
