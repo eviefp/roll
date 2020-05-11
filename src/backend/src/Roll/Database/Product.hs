@@ -44,42 +44,31 @@ data Product =
 
 getByCategory
     :: Category.Slug -> I.SqlQuery [ Product ]
-getByCategory categorySlug = fmap go <$> getProductsBySlug
+getByCategory categorySlug = fmap (go . E.entityVal) <$> getProductsBySlug
   where
     slug
         :: String
     slug = Category.getSlug categorySlug
 
     go
-        :: ( E.Value String, E.Value Text, E.Value Int, E.Value (Maybe Text) )
-        -> Product
-    go ( valueSlug, valueName, valuePrice, valueDesc ) =
+        :: I.Product -> Product
+    go p =
         Product
-        { slug        = Slug (E.unValue valueSlug)
-        , name        = E.unValue valueName
-        , price       = E.unValue valuePrice
-        , description = E.unValue valueDesc
+        { slug        = Slug (I.productSlug p)
+        , name        = I.productName p
+        , price       = I.productPrice p
+        , description = I.productDescription p
         }
 
     getProductsBySlug
-        :: I.SqlQuery [ ( E.Value String
-                        , E.Value Text
-                        , E.Value Int
-                        , E.Value (Maybe Text)
-                        )
-                      ]
+        :: I.SqlQuery [ E.Entity I.Product ]
     getProductsBySlug =
         E.select
         $ E.from
         $ \(product `E.InnerJoin` category) -> do
             E.on (product ^. I.ProductCid ==. category ^. I.CategoryId)
             E.where_ (category ^. I.CategorySlug ==. E.val slug)
-            return
-                ( product ^. I.ProductSlug
-                , product ^. I.ProductName
-                , product ^. I.ProductPrice
-                , product ^. I.ProductDescription
-                )
+            return product
 
 getBySlug
     :: Slug -> I.SqlQuery (Maybe Product)
