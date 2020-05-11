@@ -1,4 +1,4 @@
-module Roll.Component.Product
+module Roll.Component.Configurator
     ( component
     ) where
 
