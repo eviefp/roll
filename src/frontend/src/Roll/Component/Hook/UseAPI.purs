@@ -14,8 +14,6 @@ import Effect.Aff (Aff)
 import Effect.Aff.Class (class MonadAff, liftAff)
 import Halogen.Hooks as Hook
 import Halogen.Hooks.Hook (Hook)
-import Roll.API.Internal (Error)
-import Type.Prelude (Proxy)
 
 newtype UseAPI st hooks
     = UseAPI (Hook.UseEffect (Hook.UseState (Maybe st) hooks))
@@ -23,16 +21,17 @@ newtype UseAPI st hooks
 derive instance newtypeUseAPI :: Newtype (UseAPI st hooks) _
 
 hook
-    :: forall m st
+    :: forall m st err a
      . MonadAff m
-    => Proxy st
-    -> ExceptT Error Aff st
+    =>  Eq a
+    => (a -> ExceptT err Aff st)
+    -> a
     -> Hook m (UseAPI st) (Maybe st)
-hook _ api = Hook.wrap Hook.do
+hook api v = Hook.wrap Hook.do
     st /\ modifySt <- Hook.useState Nothing
 
-    Hook.useLifecycleEffect do
-        value <- liftAff $ runExceptT api
+    Hook.captures { v } Hook.useTickEffect do
+        value <- liftAff $ runExceptT (api v)
         modifySt (\_ -> hush value)
         pure Nothing
 

@@ -10,6 +10,7 @@ import Data.Newtype (class Newtype)
 import Data.Tuple.Nested ((/\))
 import Effect.Aff.Class (class MonadAff)
 import Effect.Class (liftEffect)
+import Effect.Console (log)
 import Halogen.Hooks as Hook
 import Roll.Component.Internal as I
 
@@ -24,6 +25,7 @@ hook = Hook.wrap Hook.do
 
     Hook.useLifecycleEffect do
        value <- liftEffect I.getSlug
+       liftEffect $ log $ "got slug:" <> show value
        modifySlug (const value)
        pure Nothing
 
