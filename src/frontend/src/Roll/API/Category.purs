@@ -1,6 +1,7 @@
 module Roll.API.Category
     ( getBySlug
     , getProducts
+    , getByProductVariantSlug
     , Product
     , module Exp
     ) where
@@ -25,3 +26,11 @@ type Product =
 
 getProducts :: String -> ExceptT I.Error Aff (Array Product)
 getProducts slug = I.get $ "/category/" <> slug <> "/products"
+
+type Category =
+    { slug :: String
+    , name :: String
+    }
+
+getByProductVariantSlug :: String -> ExceptT I.Error Aff (Maybe Category)
+getByProductVariantSlug slug = I.get $ "/category/byProductVariant/" <> slug

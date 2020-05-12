@@ -4,6 +4,7 @@ module Roll.Prelude
     , Text
     , head
     , tail
+    , listToMaybe
     , module Control.Lens
     , module Control.Monad
     , module Data.Generics.Product.Fields
@@ -25,6 +26,9 @@ import           Data.ByteString.Lazy
     )
 import           Data.Generics.Product.Fields
     ( field
+    )
+import           Data.Maybe
+    ( listToMaybe
     )
 import           Data.Proxy
     ( Proxy(..)
