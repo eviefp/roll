@@ -1,10 +1,12 @@
 module Roll.Component.Category
     ( component
+    , renderProduct
     ) where
 
 import Prelude
 
 import Data.Maybe (Maybe(..), maybe)
+import DOM.HTML.Indexed as D
 import Effect.Aff.Class (class MonadAff)
 import Halogen as H
 import Halogen.HTML as HH
@@ -34,17 +36,25 @@ render {title: Just t, products: Just p} =
             [ HH.text t
             ]
         , HH.ul_
-            $ renderProduct <$> p
+            $ renderProduct withUrl <$> p
         ]
 render _ = I.loading
 
-renderProduct :: forall p i. Category.Product -> HH.HTML p i
-renderProduct p =
+withUrl :: forall i. Category.Product -> Array (HH.IProp D.HTMLa i)
+withUrl p =
+    [ HP.href $ "/produs/" <> p.slug
+    ]
+
+renderProduct
+    :: forall p i
+     . (Category.Product -> Array (HH.IProp D.HTMLa i))
+    -> Category.Product
+    -> HH.HTML p i
+renderProduct prop p =
     HH.li_
         [ HH.dt_
             [ HH.a
-                [ HP.href $ "/produs/" <> p.slug
-                ]
+                (prop p)
                 [ HH.img
                     [ HP.src "https://placeimg.com/250/150/architecture"
                     ]

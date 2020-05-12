@@ -1,9 +1,11 @@
 module Roll.Component.Product
     ( component
+    , renderProductVariant
     ) where
 
 import Prelude
 
+import DOM.HTML.Indexed as D
 import Data.Maybe (Maybe(..), maybe)
 import Effect.Aff.Class (class MonadAff)
 import Halogen as H
@@ -31,16 +33,24 @@ component = Hooks.component \_ _ -> Hooks.do
 
 render :: forall p i. State -> HH.HTML p i
 render { products: Just p } =
-        HH.ul_ $ renderProduct <$> p
+        HH.ul_ $ renderProductVariant withUrl <$> p
 render _ = I.loading
 
-renderProduct :: forall p i. ProductVariant.ProductVariant -> HH.HTML p i
-renderProduct p =
+withUrl :: forall i. ProductVariant.ProductVariant -> Array (HH.IProp D.HTMLa i)
+withUrl p =
+    [ HP.href $ "/configurator/" <> p.slug
+    ]
+
+renderProductVariant
+    :: forall p i
+     . (ProductVariant.ProductVariant -> Array (HH.IProp D.HTMLa i))
+    -> ProductVariant.ProductVariant
+    -> HH.HTML p i
+renderProductVariant prop p =
     HH.li_
         [ HH.dt_
             [ HH.a
-                [ HP.href $ "/configurator/" <> p.slug
-                ]
+                (prop p)
                 [ HH.img
                     [ HP.src "https://placeimg.com/250/150/animals"
                     ]

@@ -1,8 +1,10 @@
 module Roll.Component.Internal
     ( maybeElement
+    , whenElement
     , getSlug
     , loading
     , hpure
+    , emptyElement
     ) where
 
 import Prelude
@@ -26,6 +28,9 @@ maybeElement
     -> (a -> HH.HTML p i)
     -> HH.HTML p i
 maybeElement m f = maybe emptyElement f m
+
+whenElement :: forall p i. Boolean -> (Unit -> HH.HTML p i) -> HH.HTML p i
+whenElement cond f = if cond then f unit else emptyElement
 
 emptyElement :: forall w i. HH.HTML w i
 emptyElement = HH.text ""

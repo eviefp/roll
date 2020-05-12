@@ -4,81 +4,141 @@ module Roll.Component.Configurator
 
 import Prelude
 
-import Data.Int (ceil)
+import Control.Monad.Except (runExceptT)
+import DOM.HTML.Indexed as D
+import Data.Either (hush)
+import Data.Generic.Rep as G
+import Data.Generic.Rep.Show as GS
+import Data.Int as Int
 import Data.Maybe (Maybe(..))
+import Data.Number as Number
 import Data.Tuple.Nested ((/\))
 import Effect.Aff.Class (class MonadAff)
-import Global (readInt)
 import Halogen as H
 import Halogen.HTML as HH
 import Halogen.HTML.Events as HE
 import Halogen.HTML.Properties as HP
 import Halogen.Hooks as Hooks
-import Type.Row (type (+))
+import Roll.API.Category as Category
+import Roll.API.Component.Hook.UseAPI as UseAPI
+import Roll.API.ProductVariant as PV
+import Roll.Component.Category as CC
+import Roll.Component.Internal as I
+import Roll.Component.Product as CP
 
-type Width r = ( width :: Int | r )
-type Height r = ( height :: Int | r )
-type System r = ( system :: String | r )
-type Material r = ( material :: String | r )
-type Work r = ( work :: String | r )
+data Step = Minimized | ShowProducts | ShowVariants String
 
-data State
-    = AskWidth
-    | AskHeight (Record (Width + ()))
-    | AskSystem (Record (Width + Height + ()))
-    | AskMaterial (Record (Width + Height + System + ()))
-    | AskWork (Record (Width + Height + System + Material + ()))
-    | Calculate (Record (Width + Height + System + Material + Work + ()))
+derive instance eqCategoryStep :: Eq Step
+derive instance genericCategoryStep :: G.Generic Step _
+
+instance showCategoryStep :: Show Step where
+    show cs = GS.genericShow cs
 
 component :: forall q o m. MonadAff m => H.Component HH.HTML q Unit o m
 component = Hooks.component \_ _ -> Hooks.do
-    state /\ modifyState <- Hooks.useState AskWidth
-    tmp /\ modifyTmp <- Hooks.useState ""
-    Hooks.pure $ render modifyTmp (modifyState (stateTransition tmp)) state
+    width /\ modifyWidth <- Hooks.useState Nothing
+    height /\ modifyHeight <- Hooks.useState Nothing
+    system /\ modifySystem <- Hooks.useState Nothing
+    systemsStep /\ modifySystemsStep <- Hooks.useState Minimized
+    systemShowVariants /\ modifySystemShowVariants <- Hooks.useState Nothing
 
-stateTransition
-    :: String
-    -> State
-    -> State
-stateTransition val = case _ of
-    AskWidth    -> AskHeight { width: ceil $ readInt 10 val }
-    AskHeight x -> AskHeight x
-    _           -> AskWidth
+    systems <- UseAPI.hook Category.getProducts "sisteme"
 
-render
-    :: forall p m
-     . ((String -> String) -> Hooks.HookM m Unit)
-    -> Hooks.HookM m Unit
-    -> State
-    -> HH.HTML p (Hooks.HookM m Unit)
-render modifyTmp next = case _ of
-    AskWidth -> renderAskWidth modifyTmp next
-    AskHeight r -> HH.text $ show r.width
-    _ -> HH.text "wat"
+    Hooks.captures { systemsStep } Hooks.useTickEffect do
+        case systemsStep of
+            ShowVariants slug -> do
+                variants <- H.liftAff $ runExceptT $ PV.getProducts slug
+                modifySystemShowVariants (const (hush variants))
+                pure Nothing
+            _ -> pure Nothing
 
-renderAskWidth
-    :: forall p m
-     . ((String -> String) -> Hooks.HookM m Unit)
-    -> Hooks.HookM m Unit
-    -> HH.HTML p (Hooks.HookM m Unit)
-renderAskWidth modify next =
-    HH.div_
-        [ HH.label
-            [ HP.for "askWidth"
+
+    let
+        updateFn
+            :: ((Maybe Int -> Maybe Int) -> Hooks.HookM m Unit)
+            -> String
+            -> Hooks.HookM m Unit
+        updateFn modify = modify <<< const <<< map Int.ceil <<< Number.fromString
+
+        renderWidthHeight :: forall p. Array (HH.HTML p (Hooks.HookM m Unit))
+        renderWidthHeight =
+            [ HH.fieldset_
+                [ HH.label
+                    [ HP.for "askWidth"
+                    ]
+                    [ HH.text "Latime (cm): "
+                    ]
+                , HH.input
+                    [ HP.type_ HP.InputNumber
+                    , HP.min 100.0
+                    , HP.max 700.0
+                    , HP.id_ "askWidth"
+                    , HE.onValueInput (Just <<< updateFn modifyWidth)
+                    ]
+                ]
+            , HH.fieldset_
+                [ HH.label
+                    [ HP.for "askHeight"
+                    ]
+                    [ HH.text "Inaltime (cm): "
+                    ]
+                , HH.input
+                    [ HP.type_ HP.InputNumber
+                    , HP.min 100.0
+                    , HP.max 700.0
+                    , HP.id_ "askWidth"
+                    , HE.onValueInput (Just <<< updateFn modifyHeight)
+                    ]
+                ]
             ]
-            [ HH.text "Latime (cm): "
+
+        withSelectProduct
+            :: Category.Product
+            -> Array (HH.IProp D.HTMLa (Hooks.HookM m Unit))
+        withSelectProduct p =
+            [ HP.href "#"
+            , HE.onClick $ Just <<< const (modifySystemsStep (const (ShowVariants p.slug)))
             ]
-        , HH.input
-            [ HP.type_ HP.InputNumber
-            , HP.min 100.0
-            , HP.max 700.0
-            , HP.value "200"
-            , HP.id_ "askWidth"
-            , HE.onValueChange (\s -> Just (modify (const s)))
+
+        withSelectPV
+            :: PV.ProductVariant
+            -> Array (HH.IProp D.HTMLa (Hooks.HookM m Unit))
+        withSelectPV p =
+            [ HP.href "#"
+            , HE.onClick $ Just <<< const do
+                modifySystemsStep (const Minimized)
+                modifySystem (const (Just p.slug))
             ]
-        , HH.button
-            [ HE.onClick (const (Just next))
+
+        renderSystem :: forall p. Array (HH.HTML p (Hooks.HookM m Unit))
+        renderSystem =
+            [ HH.header
+                [ HE.onClick $ Just <<< const (modifySystemsStep (const ShowProducts))
+                ]
+                [ HH.text "Sistem"
+                ]
+            , case systemsStep of
+                Minimized -> I.emptyElement
+                ShowProducts ->
+                    I.maybeElement systems do
+                        HH.section_ <<< map (CC.renderProduct withSelectProduct)
+                ShowVariants s ->
+                    I.maybeElement systemShowVariants do
+                       HH.section_ <<< map (CP.renderProductVariant withSelectPV)
             ]
-            [ HH.text "next"
+
+        renderDebug :: forall p. Array (HH.HTML p (Hooks.HookM m Unit))
+        renderDebug =
+            [ HH.text $ show { width, height, systemsStep, system }
             ]
-        ]
+
+        render :: forall p. HH.HTML p (Hooks.HookM m Unit)
+        render =
+            HH.div_
+                [ HH.section_ renderWidthHeight
+                , HH.section_ renderSystem
+                , HH.section_ renderDebug
+                ]
+
+    Hooks.pure render
+
