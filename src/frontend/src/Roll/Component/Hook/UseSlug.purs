@@ -1,4 +1,4 @@
-module Roll.API.Component.Hook.UseSlug
+module Roll.API.Component.Hooks.UseSlug
     ( UseSlug (..)
     , hook
     ) where
@@ -11,23 +11,23 @@ import Data.Tuple.Nested ((/\))
 import Effect.Aff.Class (class MonadAff)
 import Effect.Class (liftEffect)
 import Effect.Console (log)
-import Halogen.Hooks as Hook
+import Halogen.Hooks as Hooks
 import Roll.Component.Internal as I
 
 newtype UseSlug hooks
-    = UseSlug (Hook.UseEffect (Hook.UseState (Maybe String) hooks))
+    = UseSlug (Hooks.UseEffect (Hooks.UseState (Maybe String) hooks))
 
 derive instance newtypeUseSlug :: Newtype (UseSlug hooks) _
 
-hook :: forall m. MonadAff m => Hook.Hook m UseSlug (Maybe String)
-hook = Hook.wrap Hook.do
-    slug /\ modifySlug <- Hook.useState Nothing
+hook :: forall m. MonadAff m => Hooks.Hook m UseSlug (Maybe String)
+hook = Hooks.wrap Hooks.do
+    slug /\ modifySlug <- Hooks.useState Nothing
 
-    Hook.useLifecycleEffect do
+    Hooks.useLifecycleEffect do
        value <- liftEffect I.getSlug
        liftEffect $ log $ "got slug:" <> show value
        modifySlug (const value)
        pure Nothing
 
-    Hook.pure slug
+    Hooks.pure slug
 
