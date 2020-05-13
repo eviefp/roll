@@ -15,8 +15,10 @@ import qualified Roll.Database.Internal as I
 import qualified Data.Aeson             as Aeson
 import qualified Database.Esqueleto     as E
 import           Database.Esqueleto
-    ( (==.)
+    ( (!=.)
+    , (==.)
     , (^.)
+    , (||.)
     )
 import qualified Database.Persist.Class as Db
 import qualified Servant                as Servant
@@ -26,7 +28,7 @@ newtype Slug =
     { getSlug
           :: String
     }
-    deriving newtype ( Aeson.ToJSON, Servant.FromHttpApiData )
+    deriving newtype ( Aeson.ToJSON, Aeson.FromJSON, Servant.FromHttpApiData )
 
 data Product =
     Product
@@ -43,12 +45,17 @@ data Product =
     deriving anyclass ( Aeson.ToJSON )
 
 getByCategory
-    :: Category.Slug -> I.SqlQuery [ Product ]
-getByCategory categorySlug = fmap (go . E.entityVal) <$> getProductsBySlug
+    :: Category.Slug -> [ Slug ] -> I.SqlQuery [ Product ]
+getByCategory categorySlug slugs =
+    fmap (go . E.entityVal) <$> getProductsBySlug
   where
     slug
         :: String
     slug = Category.getSlug categorySlug
+
+    slugList
+        :: [ String ]
+    slugList = getSlug <$> slugs
 
     go
         :: I.Product -> Product
@@ -64,10 +71,31 @@ getByCategory categorySlug = fmap (go . E.entityVal) <$> getProductsBySlug
         :: I.SqlQuery [ E.Entity I.Product ]
     getProductsBySlug =
         E.select
+        $ E.distinct
         $ E.from
-        $ \(product `E.InnerJoin` category) -> do
+        $ \(product
+            `E.InnerJoin` category
+            `E.InnerJoin` relationship
+            `E.InnerJoin` relProduct) -> do
             E.on (product ^. I.ProductCid ==. category ^. I.CategoryId)
+            E.on
+                (product
+                 ^. I.ProductId ==. relationship
+                 ^. I.ProductRelationshipLeft ||. product
+                 ^. I.ProductId ==. relationship
+                 ^. I.ProductRelationshipRight)
+            E.on
+                (relationship
+                 ^. I.ProductRelationshipRight ==. relProduct
+                 ^. I.ProductId ||. relationship
+                 ^. I.ProductRelationshipLeft ==. relProduct
+                 ^. I.ProductId)
             E.where_ (category ^. I.CategorySlug ==. E.val slug)
+            E.where_ (product ^. I.ProductId !=. relProduct ^. I.ProductId)
+            E.where_
+                (relProduct
+                 ^. I.ProductSlug `E.in_` E.valList slugList
+                 ||. E.val (null slugList))
             return product
 
 getBySlug

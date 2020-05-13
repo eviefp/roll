@@ -8,6 +8,7 @@ create table "product_relationship"
 
 insert into "product_relationship" ("left", "right") values
     ( 1, 19 ),
+    ( 2, 20 ),
     ( 1, 11 );
 
 -- migrate:down

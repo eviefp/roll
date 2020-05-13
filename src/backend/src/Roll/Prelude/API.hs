@@ -36,6 +36,9 @@ import           Servant.API
     , Get
     , JSON
     , NoContent(..)
+    , Put
+    , QueryParam
+    , ReqBody
     , Summary
     )
 import qualified Servant.API.ContentTypes    as ContentTypes
