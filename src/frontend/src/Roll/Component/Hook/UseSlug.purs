@@ -1,4 +1,4 @@
-module Roll.API.Component.Hooks.UseSlug
+module Roll.API.Component.Hook.UseSlug
     ( UseSlug (..)
     , hook
     ) where
