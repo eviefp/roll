@@ -1,6 +1,7 @@
 module Roll.API.Category
     ( getBySlug
     , getProducts
+    , getRestrictedProducts
     , getByProductVariantSlug
     , Product
     , module Exp
@@ -9,7 +10,7 @@ module Roll.API.Category
 import Prelude
 
 import Control.Monad.Except (ExceptT)
-import Data.Maybe (Maybe)
+import Data.Maybe (Maybe(..))
 import Effect.Aff (Aff)
 import Roll.API.Internal (Error) as Exp
 import Roll.API.Internal as I
@@ -26,6 +27,13 @@ type Product =
 
 getProducts :: String -> ExceptT I.Error Aff (Array Product)
 getProducts slug = I.get $ "/category/" <> slug <> "/products"
+
+getRestrictedProducts
+    :: String
+    -> Array String
+    -> ExceptT I.Error Aff (Array Product)
+getRestrictedProducts slug restrictions =
+    I.put ("/category/" <> slug <> "/products") (Just restrictions)
 
 type Category =
     { slug :: String
