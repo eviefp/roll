@@ -8,13 +8,14 @@ module Roll.API
 import           Roll.Prelude
 import           Roll.Prelude.API
 
-import qualified Roll.API.Category       as Category
-import qualified Roll.API.CategoryRoute  as CategoryRoute
-import qualified Roll.API.Dev            as Dev
-import qualified Roll.API.ProductRoute   as ProductRoute
-import qualified Roll.API.ProductVariant as ProductVariant
-import qualified Roll.API.Quote          as Quote
-import qualified Roll.API.Static         as Static
+import qualified Roll.API.Category          as Category
+import qualified Roll.API.CategoryRoute     as CategoryRoute
+import qualified Roll.API.ConfiguratorRoute as ConfiguratorRoute
+import qualified Roll.API.Dev               as Dev
+import qualified Roll.API.ProductRoute      as ProductRoute
+import qualified Roll.API.ProductVariant    as ProductVariant
+import qualified Roll.API.Quote             as Quote
+import qualified Roll.API.Static            as Static
 
 data Routes route =
     Routes
@@ -42,6 +43,10 @@ data Routes route =
           :: route
           :- "produs"
           :> ToServantApi ProductRoute.Routes
+    , configuratorRoute
+          :: route
+          :- "configurator"
+          :> ToServantApi ConfiguratorRoute.Routes
     , static
           :: route
           :- Static.API
@@ -52,11 +57,12 @@ handler
     :: Routes RollT
 handler =
     Routes
-    { dev           = genericServerT Dev.handler
-    , quote         = genericServerT Quote.handler
-    , category      = genericServerT Category.handler
-    , categoryRoute = genericServerT CategoryRoute.handler
-    , product       = genericServerT ProductVariant.handler
-    , productRoute  = genericServerT ProductRoute.handler
-    , static        = Static.handler
+    { dev               = genericServerT Dev.handler
+    , quote             = genericServerT Quote.handler
+    , category          = genericServerT Category.handler
+    , categoryRoute     = genericServerT CategoryRoute.handler
+    , product           = genericServerT ProductVariant.handler
+    , productRoute      = genericServerT ProductRoute.handler
+    , configuratorRoute = genericServerT ConfiguratorRoute.handler
+    , static            = Static.handler
     }

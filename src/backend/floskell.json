@@ -61,7 +61,7 @@
     , "where-binds": "indent-by 2"
     }
   , "align":
-    { "limits": [ 10, 25 ]
+    { "limits": [ 10, 100 ]
     , "case": true
     , "class": true
     , "import-module": true

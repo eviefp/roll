@@ -1,22 +1,21 @@
 module Roll.Component.Category
     ( component
+    , renderProduct
     ) where
 
 import Prelude
 
-import Control.Monad.Except (runExceptT)
-import Data.Either (Either(..))
-import Data.Maybe (Maybe(..))
+import Data.Maybe (Maybe(..), maybe)
+import DOM.HTML.Indexed as D
 import Effect.Aff.Class (class MonadAff)
 import Halogen as H
 import Halogen.HTML as HH
 import Halogen.HTML.Properties as HP
+import Halogen.Hooks as Hooks
 import Roll.API.Category as Category
+import Roll.API.Component.Hook.UseAPI as UseAPI
+import Roll.API.Component.Hook.UseSlug as UseSlug
 import Roll.Component.Internal as I
-
-type HTML m = H.ComponentHTML Action () m
-
-data Action = Initialize
 
 type State =
     { title :: Maybe String
@@ -24,34 +23,38 @@ type State =
     }
 
 component :: forall q o m. MonadAff m => H.Component HH.HTML q Unit o m
-component =
-    H.mkComponent
-    { initialState: const { title: Nothing, products: Nothing }
-    , render
-    , eval: H.mkEval H.defaultEval
-        { handleAction = handleAction
-        , initialize = Just Initialize
-        }
-    }
+component = Hooks.component \_ _ -> Hooks.do
+    slug     <- UseSlug.hook
+    title    <- maybe (I.hpure Nothing) (UseAPI.hook Category.getBySlug) slug
+    products <- maybe (I.hpure Nothing) (UseAPI.hook Category.getProducts) slug
+    Hooks.pure $ render { title, products }
 
-render :: forall m. State -> HTML m
+render :: forall p i. State -> HH.HTML p i
 render {title: Just t, products: Just p} =
     HH.section_
         [ HH.h1_
             [ HH.text t
             ]
         , HH.ul_
-            $ renderProduct <$> p
+            $ renderProduct withUrl <$> p
         ]
 render _ = I.loading
 
-renderProduct :: forall m. Category.Product -> HTML m
-renderProduct p =
+withUrl :: forall i. Category.Product -> Array (HH.IProp D.HTMLa i)
+withUrl p =
+    [ HP.href $ "/produs/" <> p.slug
+    ]
+
+renderProduct
+    :: forall p i
+     . (Category.Product -> Array (HH.IProp D.HTMLa i))
+    -> Category.Product
+    -> HH.HTML p i
+renderProduct prop p =
     HH.li_
         [ HH.dt_
             [ HH.a
-                [ HP.href $ "/produs/" <> p.slug
-                ]
+                (prop p)
                 [ HH.img
                     [ HP.src "https://placeimg.com/250/150/architecture"
                     ]
@@ -67,17 +70,4 @@ renderProduct p =
             [ I.maybeElement p.description HH.text
             ]
         ]
-
-handleAction :: forall m o. MonadAff m => Action -> H.HalogenM State Action () o m Unit
-handleAction = case _ of
-    Initialize ->
-        ( H.liftAff $ runExceptT do
-            slug <- I.getSlug
-            title <- Category.getBySlug slug
-            products <- Category.getProducts slug
-            pure { products: Just products, title: Just title }
-        )
-        >>= case _ of
-            Left _ -> mempty
-            Right st -> H.put st
 

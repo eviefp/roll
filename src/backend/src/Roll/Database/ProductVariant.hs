@@ -8,28 +8,24 @@ import           Roll.Prelude
     hiding ( (^.)
            )
 
-import qualified Roll.Database.Internal as I
-import qualified Roll.Database.Product  as Product
+import qualified Roll.Database.Internal             as I
+import qualified Roll.Database.Product              as Product
+import qualified Roll.Database.ProductVariant.Types as T
+import           Roll.Database.ProductVariant.Types
+    ( Slug(getSlug)
+    )
 
-import qualified Data.Aeson             as Aeson
-import qualified Database.Esqueleto     as E
+import qualified Data.Aeson                         as Aeson
+import qualified Database.Esqueleto                 as E
 import           Database.Esqueleto
     ( (==.)
     , (^.)
     )
-import qualified Servant                as Servant
-
-newtype Slug =
-    Slug
-    { getSlug
-          :: String
-    }
-    deriving newtype ( Aeson.ToJSON, Servant.FromHttpApiData )
 
 data ProductVariant =
     ProductVariant
     { slug
-          :: Slug
+          :: T.Slug
     , name
           :: Text
     , code
@@ -54,7 +50,7 @@ getByProduct productSlug = fmap (go . E.entityVal) <$> getProductVariantsBySlug
         :: I.ProductVariant -> ProductVariant
     go pv =
         ProductVariant
-        { slug        = Slug (I.productVariantSlug pv)
+        { slug        = T.Slug (I.productVariantSlug pv)
         , name        = I.productVariantName pv
         , code        = I.productVariantCode pv
         , price       = I.productVariantPrice pv
@@ -73,3 +69,4 @@ getByProduct productSlug = fmap (go . E.entityVal) <$> getProductVariantsBySlug
                  ^. I.ProductId)
             E.where_ (product ^. I.ProductSlug ==. E.val slug)
             return productVariant
+

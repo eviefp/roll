@@ -11,8 +11,7 @@ instructions cannot appear near corresponding sections below
 because `dhall format` will delete the comment. However,
 it will not delete a top-level comment like this one.
 
-## Use Cases
-
+## Use Cases 
 Most will want to do one or both of these options:
 1. Override/Patch a package's dependency
 2. Add a package not already in the default package set
@@ -124,6 +123,7 @@ let upstream =
 let overrides =
     { halogen = upstream.halogen // { version = "v5.0.0-rc.9"}
     , halogen-vdom = upstream.halogen-vdom // { version = "v6.1.3" }
+    , halogen-hooks = upstream.halogen-hooks // { version = "v0.3.0" }
     }
 
 let additions = {=}
