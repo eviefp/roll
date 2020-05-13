@@ -46,7 +46,7 @@ getBySlug (Slug slug) =
 getByProductVariantSlug
     :: ProductVariant.Slug -> I.SqlQuery (Maybe Category)
 getByProductVariantSlug
-    pvSlug = fmap (go . E.entityVal) . listToMaybe <$> getProductByVariantSlug
+    pvSlug = fmap (go . E.entityVal) . listToMaybe <$> query
   where
     slug
         :: String
@@ -60,9 +60,9 @@ getByProductVariantSlug
         , name = I.categoryName cat
         }
 
-    getProductByVariantSlug
+    query
         :: I.SqlQuery [ E.Entity I.Category ]
-    getProductByVariantSlug =
+    query =
         do
             E.select
         $ E.from
