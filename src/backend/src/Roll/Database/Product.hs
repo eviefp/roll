@@ -81,26 +81,23 @@ getByCategory categorySlug slugs =
             `E.InnerJoin` relProductVariant) -> do
             E.on (product ^. I.ProductCid ==. category ^. I.CategoryId)
             E.on
-                (product
-                 ^. I.ProductId ==. relationship
-                 ^. I.ProductRelationshipLeft ||. product
-                 ^. I.ProductId ==. relationship
-                 ^. I.ProductRelationshipRight)
+                (product ^. I.ProductId
+                 ==. relationship ^. I.ProductRelationshipLeft
+                 ||. product ^. I.ProductId
+                 ==. relationship ^. I.ProductRelationshipRight)
             E.on
-                (relationship
-                 ^. I.ProductRelationshipRight ==. relProduct
-                 ^. I.ProductId ||. relationship
-                 ^. I.ProductRelationshipLeft ==. relProduct
-                 ^. I.ProductId)
+                (relationship ^. I.ProductRelationshipRight
+                 ==. relProduct ^. I.ProductId
+                 ||. relationship ^. I.ProductRelationshipLeft
+                 ==. relProduct ^. I.ProductId)
             E.on
-                (relProduct
-                 ^. I.ProductId ==. relProductVariant
-                 ^. I.ProductVariantPid)
+                (relProduct ^. I.ProductId
+                 ==. relProductVariant ^. I.ProductVariantPid)
             E.where_ (category ^. I.CategorySlug ==. E.val slug)
             E.where_ (product ^. I.ProductId !=. relProduct ^. I.ProductId)
             E.where_
-                (relProductVariant
-                 ^. I.ProductVariantSlug `E.in_` E.valList slugList
+                (relProductVariant ^. I.ProductVariantSlug
+                 `E.in_` E.valList slugList
                  ||. E.val (null slugList))
             return product
 
