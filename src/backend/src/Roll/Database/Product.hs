@@ -9,19 +9,20 @@ import           Roll.Prelude
     hiding ( (^.)
            )
 
-import qualified Roll.Database.Category as Category
-import qualified Roll.Database.Internal as I
+import qualified Roll.Database.Category             as Category
+import qualified Roll.Database.Internal             as I
+import qualified Roll.Database.ProductVariant.Types as PV
 
-import qualified Data.Aeson             as Aeson
-import qualified Database.Esqueleto     as E
+import qualified Data.Aeson                         as Aeson
+import qualified Database.Esqueleto                 as E
 import           Database.Esqueleto
     ( (!=.)
     , (==.)
     , (^.)
     , (||.)
     )
-import qualified Database.Persist.Class as Db
-import qualified Servant                as Servant
+import qualified Database.Persist.Class             as Db
+import qualified Servant                            as Servant
 
 newtype Slug =
     Slug
@@ -45,7 +46,7 @@ data Product =
     deriving anyclass ( Aeson.ToJSON )
 
 getByCategory
-    :: Category.Slug -> [ Slug ] -> I.SqlQuery [ Product ]
+    :: Category.Slug -> [ PV.Slug ] -> I.SqlQuery [ Product ]
 getByCategory categorySlug slugs =
     fmap (go . E.entityVal) <$> getProductsBySlug
   where
@@ -55,7 +56,7 @@ getByCategory categorySlug slugs =
 
     slugList
         :: [ String ]
-    slugList = getSlug <$> slugs
+    slugList = PV.getSlug <$> slugs
 
     go
         :: I.Product -> Product
@@ -76,7 +77,8 @@ getByCategory categorySlug slugs =
         $ \(product
             `E.InnerJoin` category
             `E.InnerJoin` relationship
-            `E.InnerJoin` relProduct) -> do
+            `E.InnerJoin` relProduct
+            `E.InnerJoin` relProductVariant) -> do
             E.on (product ^. I.ProductCid ==. category ^. I.CategoryId)
             E.on
                 (product
@@ -90,11 +92,15 @@ getByCategory categorySlug slugs =
                  ^. I.ProductId ||. relationship
                  ^. I.ProductRelationshipLeft ==. relProduct
                  ^. I.ProductId)
+            E.on
+                (relProduct
+                 ^. I.ProductId ==. relProductVariant
+                 ^. I.ProductVariantPid)
             E.where_ (category ^. I.CategorySlug ==. E.val slug)
             E.where_ (product ^. I.ProductId !=. relProduct ^. I.ProductId)
             E.where_
-                (relProduct
-                 ^. I.ProductSlug `E.in_` E.valList slugList
+                (relProductVariant
+                 ^. I.ProductVariantSlug `E.in_` E.valList slugList
                  ||. E.val (null slugList))
             return product
 

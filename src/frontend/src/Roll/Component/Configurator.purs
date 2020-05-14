@@ -4,6 +4,8 @@ module Roll.Component.Configurator
 
 import Prelude
 
+import Data.Array as A
+import Data.Maybe (Maybe(..))
 import Data.Tuple.Nested ((/\))
 import Effect.Aff.Class (class MonadAff)
 import Halogen as H
@@ -31,10 +33,16 @@ component = Hooks.component \_ _ -> Hooks.do
             , max: 700.0
             }
 
-    system /\ renderSystem <- CategoryView.hook "sisteme" "Sisteme"
-    material /\ renderMaterial <- CategoryView.hook "materiale" "Materiale"
-    work /\ renderWork <- CategoryView.hook "manopera" "Manopera"
+    system /\ s /\ renderSystem <- CategoryView.hook "sisteme" "Sisteme"
+    material /\ m /\ renderMaterial <- CategoryView.hook "materiale" "Materiale"
+    work /\ w /\ renderWork <- CategoryView.hook "manopera" "Manopera"
 
+    Hooks.captures {system, material, work} Hooks.useTickEffect do
+       let slugs = A.catMaybes [ system, material, work ]
+       s slugs
+       m slugs
+       w slugs
+       pure Nothing
 
     let
         renderWidthHeight :: Array (HTML m)

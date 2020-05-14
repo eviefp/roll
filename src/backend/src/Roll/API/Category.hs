@@ -11,8 +11,6 @@ import qualified Roll.Database.Category       as Category
 import qualified Roll.Database.Product        as Product
 import qualified Roll.Database.ProductVariant as ProductVariant
 
-import qualified Control.Monad.IO.Class       as MonadIO
-
 data Routes route =
     Routes
     { get
@@ -23,19 +21,12 @@ data Routes route =
           :> Get '[JSON] Text
     , products
           :: route
-          :- Summary "Get products"
-          :> Description "Get products for the category."
-          :> Capture "slug" Category.Slug
-          :> "products"
-          :> Get '[JSON] [ Product.Product ]
-    , getProductsFiltered
-          :: route
           :- Summary "Get filtered products"
           :> Description "Get products for the category, that are compatible."
           :> Capture "slug" Category.Slug
           :> "products"
-          :> ReqBody '[JSON] [ Product.Slug ]
-          :> Put '[JSON] [ Product.Product ]
+          :> QueryParams "products" ProductVariant.Slug
+          :> Get '[JSON] [ Product.Product ]
     , getByProductVariant
           :: route
           :- Summary "Get by product variant"
@@ -51,8 +42,7 @@ handler
 handler =
     Routes
     { get                 = getBySlug
-    , products            = (`getProducts` [])
-    , getProductsFiltered = getProducts
+    , products            = getProducts
     , getByProductVariant = byProductVariant
     }
 
@@ -61,14 +51,8 @@ getBySlug
 getBySlug = maybe (throwError err404) pure <=< Db.run . Category.getBySlug
 
 getProducts
-    :: Category.Slug -> [ Product.Slug ] -> RollM [ Product.Product ]
-getProducts slug slugs =
-    do
-        MonadIO.liftIO
-            $ print
-            $ Product.getSlug <$> slugs
-        throwIfEmpty <=< Db.run . Product.getByCategory slug
-            $ slugs
+    :: Category.Slug -> [ ProductVariant.Slug ] -> RollM [ Product.Product ]
+getProducts slug = throwIfEmpty <=< Db.run . Product.getByCategory slug
 
 byProductVariant
     :: ProductVariant.Slug -> RollM Category.Category

@@ -43,23 +43,30 @@ newtype CategoryView hooks
     = CategoryView
         ( Hooks.UseEffect
         ( UseAPI.UseAPI (Array Category.Product)
+        ( Hooks.UseState (Array String)
         ( Hooks.UseState (Maybe (Array (PV.ProductVariant)))
         ( Hooks.UseState Step
-        ( Hooks.UseState (Maybe String) hooks)))))
+        ( Hooks.UseState (Maybe String) hooks ))))))
 
 derive instance newtypeCategoryView :: Newtype (CategoryView hooks) _
+
+type UpdateSlugs m = (Array String -> Hooks.HookM m Unit)
 
 hook
     :: forall m
      . MonadAff m
     => String
     -> String
-    -> Hooks.Hook m CategoryView (HookComponent m (Maybe String))
+    -> Hooks.Hook
+      m
+      CategoryView
+      (Maybe String /\ UpdateSlugs m /\ (Unit -> HTML m))
 hook slug text = Hooks.wrap Hooks.do
     system /\ modifySystem <- Hooks.useState Nothing
     systemsStep /\ modifySystemsStep <- Hooks.useState Minimized
     systemShowVariants /\ modifySystemShowVariants <- Hooks.useState Nothing
-    systems <- UseAPI.hook Category.getProducts slug
+    slugs /\ modifySlugs <- Hooks.useState []
+    systems <- UseAPI.hook (Category.getRestrictedProducts slug) slugs
 
     Hooks.captures { systemsStep } Hooks.useTickEffect do
         case systemsStep of
@@ -105,5 +112,5 @@ hook slug text = Hooks.wrap Hooks.do
                         I.maybeElement systemShowVariants do
                            HH.section_ <<< map (CP.renderProductVariant withSelectPV)
                 ]
-    Hooks.pure $ system /\ render
+    Hooks.pure $ system /\ (modifySlugs <<< const) /\ render
 

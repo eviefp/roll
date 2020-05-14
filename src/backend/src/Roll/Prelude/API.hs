@@ -38,6 +38,7 @@ import           Servant.API
     , NoContent(..)
     , Put
     , QueryParam
+    , QueryParams
     , ReqBody
     , Summary
     )

@@ -30,6 +30,7 @@ get url =
     ExceptT (lmap AffjaxError <$> Affjax.get RF.string url)
         >>= except <<< lmap ParsingError <<< Json.readJSON <<< _.body
 
+-- TODO: this fails on empty arrays for example due to encoding problems.
 put
     :: forall a b
      . Json.ReadForeign a

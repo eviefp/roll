@@ -5,6 +5,7 @@ module Roll.Prelude
     , head
     , tail
     , listToMaybe
+    , catMaybes
     , module Control.Lens
     , module Control.Monad
     , module Data.Generics.Product.Fields
@@ -28,7 +29,8 @@ import           Data.Generics.Product.Fields
     ( field
     )
 import           Data.Maybe
-    ( listToMaybe
+    ( catMaybes
+    , listToMaybe
     )
 import           Data.Proxy
     ( Proxy(..)
