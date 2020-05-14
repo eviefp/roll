@@ -21,10 +21,11 @@ data Routes route =
           :> Get '[JSON] Text
     , products
           :: route
-          :- Summary "Get products"
-          :> Description "Get products for the category."
+          :- Summary "Get filtered products"
+          :> Description "Get products for the category, that are compatible."
           :> Capture "slug" Category.Slug
           :> "products"
+          :> QueryParams "products" ProductVariant.Slug
           :> Get '[JSON] [ Product.Product ]
     , getByProductVariant
           :: route
@@ -50,8 +51,8 @@ getBySlug
 getBySlug = maybe (throwError err404) pure <=< Db.run . Category.getBySlug
 
 getProducts
-    :: Category.Slug -> RollM [ Product.Product ]
-getProducts = throwIfEmpty <=< Db.run . Product.getByCategory
+    :: Category.Slug -> [ ProductVariant.Slug ] -> RollM [ Product.Product ]
+getProducts slug = throwIfEmpty <=< Db.run . Product.getByCategory slug
 
 byProductVariant
     :: ProductVariant.Slug -> RollM Category.Category

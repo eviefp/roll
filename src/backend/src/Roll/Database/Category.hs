@@ -63,8 +63,7 @@ getByProductVariantSlug
     query
         :: I.SqlQuery [ E.Entity I.Category ]
     query =
-        do
-            E.select
+        E.select
         $ E.from
         $ \(productVariant `E.InnerJoin` product `E.InnerJoin` category) -> do
             E.on

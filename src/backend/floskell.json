@@ -22,6 +22,22 @@
   , "TupleSections"
   ]
 , "style": "base"
+, "fixities":
+  [ "infixl 9 ^."
+  , "infix  4 ==."
+  , "infix  4 >=."
+  , "infix  4 >."
+  , "infix  4 <=."
+  , "infix  4 <."
+  , "infix  4 !=."
+  , "infixr 3 &&."
+  , "infixl 2 ||."
+  , "infixl 6 +."
+  , "infixl 6 -."
+  , "infixl 7 /."
+  , "infixl 7 *."
+
+  ]
 , "formatting":
   { "penalty":
     { "indent": 1

@@ -66,5 +66,13 @@ ProductVariant
     Primary pvid
     UniqueProductVariantSlug slug
     UniqueProductVariantCode code
+
+ProductRelationship
+    prid Int
+    left ProductId
+    right ProductId
+
+    Primary prid
+    UniqueProductRelationshipLR left right
 |]
 
