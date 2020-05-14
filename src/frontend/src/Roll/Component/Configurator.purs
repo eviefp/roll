@@ -33,15 +33,18 @@ component = Hooks.component \_ _ -> Hooks.do
             , max: 700.0
             }
 
-    system /\ s /\ renderSystem <- CategoryView.hook "sisteme" "Sisteme"
-    material /\ m /\ renderMaterial <- CategoryView.hook "materiale" "Materiale"
-    work /\ w /\ renderWork <- CategoryView.hook "manopera" "Manopera"
+    system /\ updateSystem /\ renderSystem
+        <- CategoryView.hook "sisteme" "Sisteme"
+    material /\ updateMaterial /\ renderMaterial
+        <- CategoryView.hook "materiale" "Materiale"
+    work /\ updateWork /\ renderWork
+        <- CategoryView.hook "manopera" "Manopera"
 
     Hooks.captures {system, material, work} Hooks.useTickEffect do
        let slugs = A.catMaybes [ system, material, work ]
-       s slugs
-       m slugs
-       w slugs
+       updateSystem slugs
+       updateMaterial slugs
+       updateWork slugs
        pure Nothing
 
     let
