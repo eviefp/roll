@@ -33,11 +33,11 @@ component = Hooks.component \_ _ -> Hooks.do
             , max: 700.0
             }
 
-    system /\ updateSystem /\ renderSystem
+    system /\ systemOptions /\ updateSystem /\ renderSystem
         <- CategoryView.hook "sisteme" "Sisteme"
-    material /\ updateMaterial /\ renderMaterial
+    material /\ materialOptions /\ updateMaterial /\ renderMaterial
         <- CategoryView.hook "materiale" "Materiale"
-    work /\ updateWork /\ renderWork
+    work /\ workOptions /\ updateWork /\ renderWork
         <- CategoryView.hook "manopera" "Manopera"
 
     Hooks.captures {system, material, work} Hooks.useTickEffect do
@@ -57,7 +57,16 @@ component = Hooks.component \_ _ -> Hooks.do
 
         renderDebug ::  Array (HTML m)
         renderDebug =
-            [ HH.text $ show { width, height, system, material, work }
+            [ HH.text $ show
+                { width
+                , height
+                , system
+                , material
+                , work
+                , systemOptions
+                , materialOptions
+                , workOptions
+                }
             ]
 
         render :: HTML m
