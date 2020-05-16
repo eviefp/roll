@@ -6,14 +6,21 @@ module Roll.Prelude
     , tail
     , listToMaybe
     , catMaybes
+    , module Control.Applicative
     , module Control.Lens
     , module Control.Monad
     , module Data.Generics.Product.Fields
+    , module Data.Foldable
+    , module Data.Functor
+    , module Data.Void
     , module Data.Proxy
     , module GHC.Generics
     , module System.FilePath.Posix
     ) where
 
+import           Control.Applicative
+    ( (<|>)
+    )
 import           Control.Lens
     ( (^.)
     , view
@@ -24,6 +31,12 @@ import           Control.Monad
     )
 import           Data.ByteString.Lazy
     ( ByteString
+    )
+import           Data.Foldable
+    ( asum
+    )
+import           Data.Functor
+    ( ($>)
     )
 import           Data.Generics.Product.Fields
     ( field
@@ -38,8 +51,13 @@ import           Data.Proxy
 import           Data.Text
     ( Text
     )
+import           Data.Void
+    ( Void
+    , absurd
+    )
 import           GHC.Generics
     ( Generic
+    , Generic1
     )
 import           Prelude
     hiding ( (!!)
