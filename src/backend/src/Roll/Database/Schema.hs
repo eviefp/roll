@@ -74,5 +74,26 @@ ProductRelationship
 
     Primary prid
     UniqueProductRelationshipLR left right
+
+Option
+    oid Int
+    name Text
+    description Text
+
+    Primary oid
+
+OptionItem
+    oiid Int
+    oid OptionId
+    name Text
+
+    Primary oiid
+
+ProductOption
+    poid Int
+    pid ProductId
+    oid OptionId
+
+    Primary poid
 |]
 

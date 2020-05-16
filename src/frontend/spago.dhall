@@ -12,6 +12,7 @@ You can edit this file as you like.
   , "halogen"
   , "halogen-hooks"
   , "numbers"
+  , "profunctor-lenses"
   , "psci-support"
   , "random"
   , "simple-json"
