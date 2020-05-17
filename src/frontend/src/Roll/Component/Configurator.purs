@@ -52,29 +52,27 @@ component = Hooks.component \_ _ -> Hooks.do
 
     price /\ modifyPrice <- Hooks.useState emptyOutput
 
-    Hooks.captures {system, material, work} Hooks.useTickEffect do
-       let slugs = A.catMaybes [ system, material, work ]
-       updateSystem slugs
-       updateMaterial slugs
-       updateWork slugs
-       if A.length slugs == 3
-            then
-                case width, height of
-                    Just latime, Just inaltime ->
-                        let mkInput =
-                                { groups: { system, material, work }
-                                , inputs: { inaltime, latime}
-                                }
-                        in (H.liftAff
-                               $ runExceptT
-                               $ Configurator.calculatePrice mkInput)
-                            >>= modifyPrice
-                                    <<< const
-                                    <<< fromMaybe emptyOutput
-                                    <<< hush
-                    _, _ -> mempty
-            else mempty
-       pure Nothing
+    Hooks.captures { system, material, work, width, height } Hooks.useTickEffect do
+        let slugs = A.catMaybes [ system, material, work ]
+        updateSystem slugs
+        updateMaterial slugs
+        updateWork slugs
+        case width, height of
+            Just latime, Just inaltime ->
+                let mkInput =
+                        { groups: { system, material, work }
+                        , inputs: { inaltime, latime}
+                        }
+                in (H.liftAff
+                       $ runExceptT
+                       $ Configurator.calculatePrice mkInput)
+                    >>= modifyPrice
+                            <<< const
+                            <<< fromMaybe emptyOutput
+                            <<< hush
+            _, _ -> mempty
+        pure Nothing
+
 
     let
         renderWidthHeight :: Array (HTML m)
