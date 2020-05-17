@@ -7,6 +7,7 @@ module Roll.Calculator.Expr
 
 import           Roll.Prelude
 
+import qualified Data.Aeson            as Aeson
 import qualified Data.Functor.Classes  as Classes
 import qualified Data.Functor.Foldable as F
 import qualified Generic.Data          as G
@@ -17,7 +18,7 @@ newtype Identifier =
           :: Text
     }
     deriving stock ( Generic, Show )
-    deriving newtype ( Ord, Eq )
+    deriving newtype ( Ord, Eq, Aeson.FromJSONKey )
 
 data ExprF a b where
     -- Variables and constants.

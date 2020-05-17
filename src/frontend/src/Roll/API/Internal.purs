@@ -45,4 +45,4 @@ put url body =
         >>= except <<< lmap ParsingError <<< Json.readJSON <<< _.body
   where
     body' :: Maybe RB.RequestBody
-    body' = RB.json <$> unsafeCoerce (Json.write body)
+    body' = RB.json <$> unsafeCoerce (Json.write <$> body)

@@ -6,8 +6,9 @@ update "product"
   set price_formula =
 --    'in lungime'
 '
+in latime
 pretPerCm = 123
-pret = floor (pretPerCm * 2)
+pret = floor (pretPerCm * latime)
 result = pret
 
 out result

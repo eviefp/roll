@@ -135,15 +135,14 @@ data Group a =
     deriving anyclass ( Aeson.FromJSON, Aeson.ToJSON )
 
 getPricesByGroup
-    :: Group String -> I.SqlQuery (Group Int)
-getPricesByGroup input = go . getCode <$> getPriceCodes
+    :: Group String -> M.Map Expr.Identifier Double -> I.SqlQuery (Group Int)
+getPricesByGroup input inputs = go . getCode <$> getPriceCodes
   where
     go
         :: Group Text -> Group Int
     go group =
         let
             -- TODO: provide height/width as inputs and refactor this mess
-            inputs     = M.empty
             statements =
                 Group
                 { system   = system group
@@ -198,9 +197,13 @@ getPricesByGroup input = go . getCode <$> getPriceCodes
     getPriceCodes =
         E.select
         $ E.from
-        $ \(product `E.InnerJoin` category) -> do
+        $ \(product `E.InnerJoin` category `E.InnerJoin` productVariant) -> do
             E.on (product ^. I.ProductCid ==. category ^. I.CategoryId)
-            E.where_ (product ^. I.ProductSlug `E.in_` E.valList slugs)
+            E.on
+                (product ^. I.ProductId
+                 ==. productVariant ^. I.ProductVariantPid)
+            E.where_
+                (productVariant ^. I.ProductVariantSlug `E.in_` E.valList slugs)
             return
                 ( category ^. I.CategorySlug
                 , product ^. I.ProductPriceFormula
