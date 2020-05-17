@@ -10,6 +10,7 @@ import           Roll.Prelude.API
 
 import qualified Roll.API.Category          as Category
 import qualified Roll.API.CategoryRoute     as CategoryRoute
+import qualified Roll.API.Configurator      as Configurator
 import qualified Roll.API.ConfiguratorRoute as ConfiguratorRoute
 import qualified Roll.API.Dev               as Dev
 import qualified Roll.API.ProductOption     as ProductOption
@@ -44,6 +45,10 @@ data Routes route =
           :: route
           :- "option"
           :> ToServantApi ProductOption.Routes
+    , configurator
+          :: route
+          :- "config"
+          :> ToServantApi Configurator.Routes
     , productRoute
           :: route
           :- "produs"
@@ -68,6 +73,7 @@ handler =
     , categoryRoute     = genericServerT CategoryRoute.handler
     , product           = genericServerT ProductVariant.handler
     , option            = genericServerT ProductOption.handler
+    , configurator      = genericServerT Configurator.handler
     , productRoute      = genericServerT ProductRoute.handler
     , configuratorRoute = genericServerT ConfiguratorRoute.handler
     , static            = Static.handler

@@ -23,7 +23,7 @@ type ExprF = E.ExprF Double Expr
 
 parseProgram
     :: Parser [ E.Statement ]
-parseProgram = M.many (parseStatement <* end)
+parseProgram = M.many end *> M.many (parseStatement <* end)
 
 parseStatement
     :: Parser E.Statement
@@ -104,7 +104,7 @@ parseBinaryFn fn ctor =
 
 space
     :: Parser ()
-space = ML.space MC.space1 M.empty M.empty
+space = ML.space (M.some (MC.char ' ') $> ()) M.empty M.empty
 
 lexeme
     :: Parser a -> Parser a
@@ -124,5 +124,5 @@ parseDouble = ML.signed mempty (M.try ML.float <|> ML.decimal)
 
 end
     :: Parser ()
-end = symbol ";" $> () <|> MC.eol $> () <|> M.eof
+end = (M.some (lexeme MC.eol) $> ()) <|> (symbol ";" $> ()) <|> M.eof
 

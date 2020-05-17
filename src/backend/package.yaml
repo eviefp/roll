@@ -52,8 +52,10 @@ default-extensions:
 - BlockArguments
 - DataKinds
 - DeriveAnyClass
+- DeriveFoldable
 - DeriveFunctor
 - DeriveGeneric
+- DeriveTraversable
 - DerivingVia
 - EmptyCase
 - FlexibleContexts

@@ -1,21 +1,21 @@
 module Roll.Prelude
-    ( module Prelude
-    , ByteString
+    ( ByteString
     , Text
-    , head
-    , tail
-    , listToMaybe
-    , catMaybes
     , module Control.Applicative
     , module Control.Lens
     , module Control.Monad
-    , module Data.Generics.Product.Fields
+    , module Data.Bifunctor
     , module Data.Foldable
     , module Data.Functor
-    , module Data.Void
+    , module Data.Generics.Product.Fields
+    , module Data.Maybe
     , module Data.Proxy
+    , module Data.Void
     , module GHC.Generics
+    , module Prelude
     , module System.FilePath.Posix
+    , head
+    , tail
     ) where
 
 import           Control.Applicative
@@ -29,11 +29,15 @@ import           Control.Monad
     ( (<=<)
     , (>=>)
     )
+import           Data.Bifunctor
+    ( Bifunctor(..)
+    )
 import           Data.ByteString.Lazy
     ( ByteString
     )
 import           Data.Foldable
     ( asum
+    , fold
     )
 import           Data.Functor
     ( ($>)
@@ -43,6 +47,7 @@ import           Data.Generics.Product.Fields
     )
 import           Data.Maybe
     ( catMaybes
+    , fromMaybe
     , listToMaybe
     )
 import           Data.Proxy
