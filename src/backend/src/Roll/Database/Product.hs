@@ -138,47 +138,28 @@ getPricesByGroup
     :: Group String -> M.Map Expr.Identifier Double -> I.SqlQuery (Group Int)
 getPricesByGroup input inputs = go . getCode <$> getPriceCodes
   where
+    slugs
+        :: [ String ]
+    slugs = catMaybes [ system input, material input, work input ]
+
     go
         :: Group Text -> Group Int
     go group =
         let
-            -- TODO: provide height/width as inputs and refactor this mess
-            statements =
-                Group
-                { system   = system group
-                      >>= Parsec.parseMaybe Parser.parseProgram
-                , material = material group
-                      >>= Parsec.parseMaybe Parser.parseProgram
-                , work     = work group
-                      >>= Parsec.parseMaybe Parser.parseProgram
-                }
-            system'    = (`Interpreter.eval` inputs) <$> system statements
+            statements = traverse' parse group
+            -- Unfortunately, these need to be calculated sequentially.
+            system'    = interpret inputs <$> system statements
             work'      =
-                (`Interpreter.eval` (M.union
-                                         inputs
-                                         (fromMaybe M.empty system')))
-                <$> work statements
+                interpret (union [ Just inputs, system' ]) <$> work statements
             material'  =
-                (`Interpreter.eval` (fold
-                                     $ catMaybes
-                                         [ pure inputs, work', system' ]))
+                interpret (union [ Just inputs, system', work' ])
                 <$> material statements
             in
                 Group
-                { system   = floor
-                      <$> (system'
-                           >>= M.lookup (Expr.Identifier "result"))
-                , work     = floor
-                      <$> (work'
-                           >>= M.lookup (Expr.Identifier "result"))
-                , material = floor
-                      <$> (material'
-                           >>= M.lookup (Expr.Identifier "result"))
+                { system   = mkPrice system'
+                , work     = mkPrice work'
+                , material = mkPrice material'
                 }
-
-    slugs
-        :: [ String ]
-    slugs = catMaybes [ system input, material input, work input ]
 
     getCode
         :: [ ( E.Value String, E.Value Text ) ] -> Group Text
@@ -208,3 +189,36 @@ getPricesByGroup input inputs = go . getCode <$> getPriceCodes
                 ( category ^. I.CategorySlug
                 , product ^. I.ProductPriceFormula
                 )
+
+traverse'
+    :: (a -> Maybe b) -> Group a -> Group b
+traverse' f grp =
+    Group
+    { system   = system grp
+          >>= f
+    , material = material grp
+          >>= f
+    , work     = work grp
+          >>= f
+    }
+
+parse
+    :: Text -> Maybe [ Expr.Statement ]
+parse = Parsec.parseMaybe Parser.parseProgram
+
+interpret
+    :: M.Map Expr.Identifier Double
+    -> [ Expr.Statement ]
+    -> M.Map Expr.Identifier Double
+interpret i = (`Interpreter.eval` i)
+
+union
+    :: [ Maybe (M.Map Expr.Identifier Double) ] -> M.Map Expr.Identifier Double
+union = fold . catMaybes
+
+mkPrice
+    :: Maybe (M.Map Expr.Identifier Double) -> Maybe Int
+mkPrice m =
+    m
+    >>= fmap floor . M.lookup (Expr.Identifier "result")
+

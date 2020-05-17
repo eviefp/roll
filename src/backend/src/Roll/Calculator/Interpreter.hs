@@ -25,6 +25,9 @@ evalStatement
     -> S.State (M.Map Identifier Double) (M.Map E.Identifier Double)
 evalStatement =
     \case
+        -- TODO: Currently everything that was 'out'putted will be available
+        -- 'in' the current scope. We should probably tag variables somehow
+        -- if we want to enforce this.
         E.In _              -> pure mempty
         E.Out ident         -> maybe mempty (M.singleton ident)
             <$> S.gets (M.lookup ident)
