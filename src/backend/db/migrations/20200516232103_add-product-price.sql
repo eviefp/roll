@@ -1,8 +1,8 @@
 -- migrate:up
-alter table "product"
+alter table "product_variant"
     add column price_formula text not null default 'todo = 42; out todo';
 
-update "product"
+update "product_variant"
   set price_formula =
 --    'in lungime'
 '
@@ -15,9 +15,9 @@ out result
 foo = 10
 out foo
 '
-    where slug = 'nexty';
+    where slug = 'nexty-alb';
 
-update "product"
+update "product_variant"
   set price_formula =
 '
 in foo
@@ -27,9 +27,9 @@ out bar
 result = 123
 out result
 '
-    where slug = '1pliu';
+    where slug = '1pliu-economicsimplu';
 
-update "product"
+update "product_variant"
   set price_formula =
 '
 in bar
@@ -40,9 +40,9 @@ out foobar
 result = 456
 out result
 '
-    where slug = 'material1';
+    where slug = 'material1-alb';
 
 
 -- migrate:down
-alter table "product" drop column price_formula
+alter table "product_variant" drop column price_formula
 

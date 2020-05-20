@@ -49,7 +49,6 @@ Product
     sid SupplierId Maybe
     name Text
     price Int
-    priceFormula Text
     description Text Maybe
 
     Primary pid
@@ -62,6 +61,7 @@ ProductVariant
     name Text
     code Text
     price Int
+    priceFormula Text
     description Text Maybe
 
     Primary pvid

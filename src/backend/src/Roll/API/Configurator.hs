@@ -6,12 +6,12 @@ module Roll.API.Configurator
 import           Roll.Prelude
 import           Roll.Prelude.API
 
-import qualified Roll.Calculator.Expr  as Expr
-import qualified Roll.Database         as Db
-import qualified Roll.Database.Product as Product
+import qualified Roll.Calculator.Expr         as Expr
+import qualified Roll.Database                as Db
+import qualified Roll.Database.ProductVariant as ProductVariant
 
-import qualified Data.Aeson            as Aeson
-import qualified Data.Map              as M
+import qualified Data.Aeson                   as Aeson
+import qualified Data.Map                     as M
 
 newtype Routes route =
     Routes
@@ -20,14 +20,14 @@ newtype Routes route =
           :- Summary "Calculate price"
           :> Description "Calculate price for product variant group."
           :> ReqBody '[JSON] Input
-          :> Put '[JSON] (Product.Group Int)
+          :> Put '[JSON] (ProductVariant.Group Int)
     }
     deriving stock Generic
 
 data Input =
     Input
     { groups
-          :: Product.Group String
+          :: ProductVariant.Group String
     , inputs
           :: M.Map Expr.Identifier Double
     }
@@ -39,7 +39,7 @@ handler
 handler = Routes { price = calculatePrice }
 
 calculatePrice
-    :: Input -> RollM (Product.Group Int)
+    :: Input -> RollM (ProductVariant.Group Int)
 calculatePrice Input{ groups, inputs } =
     Db.run
-    $ Product.getPricesByGroup groups inputs
+    $ ProductVariant.getPricesByGroup groups inputs
