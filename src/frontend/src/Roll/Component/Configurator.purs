@@ -4,8 +4,10 @@ module Roll.Component.Configurator
 
 import Prelude
 
+import Control.Monad.Except (runExceptT)
 import Data.Array as A
-import Data.Maybe (Maybe(..))
+import Data.Either (hush)
+import Data.Maybe (Maybe(..), fromMaybe)
 import Data.Tuple.Nested ((/\))
 import Effect.Aff.Class (class MonadAff)
 import Halogen as H
@@ -13,8 +15,16 @@ import Halogen.HTML as HH
 import Halogen.Hooks as Hooks
 import Roll.API.Component.Hook.CategoryView as CategoryView
 import Roll.API.Component.Hook.NumericInput as NumericInput
+import Roll.API.Configurator as Configurator
 
 type HTML m = H.ComponentHTML (Hooks.HookM m Unit) () m
+
+emptyOutput :: Configurator.Output Int
+emptyOutput =
+    { system: Nothing
+    , material: Nothing
+    , work: Nothing
+    }
 
 component :: forall q o m. MonadAff m => H.Component HH.HTML q Unit o m
 component = Hooks.component \_ _ -> Hooks.do
@@ -40,12 +50,29 @@ component = Hooks.component \_ _ -> Hooks.do
     work /\ workOptions /\ updateWork /\ renderWork
         <- CategoryView.hook "manopera" "Manopera"
 
-    Hooks.captures {system, material, work} Hooks.useTickEffect do
-       let slugs = A.catMaybes [ system, material, work ]
-       updateSystem slugs
-       updateMaterial slugs
-       updateWork slugs
-       pure Nothing
+    price /\ modifyPrice <- Hooks.useState emptyOutput
+
+    Hooks.captures { system, material, work, width, height } Hooks.useTickEffect do
+        let slugs = A.catMaybes [ system, material, work ]
+        updateSystem slugs
+        updateMaterial slugs
+        updateWork slugs
+        case width, height of
+            Just latime, Just inaltime ->
+                let mkInput =
+                        { groups: { system, material, work }
+                        , inputs: { inaltime, latime}
+                        }
+                in (H.liftAff
+                       $ runExceptT
+                       $ Configurator.calculatePrice mkInput)
+                    >>= modifyPrice
+                            <<< const
+                            <<< fromMaybe emptyOutput
+                            <<< hush
+            _, _ -> mempty
+        pure Nothing
+
 
     let
         renderWidthHeight :: Array (HTML m)
@@ -66,6 +93,7 @@ component = Hooks.component \_ _ -> Hooks.do
                 , systemOptions
                 , materialOptions
                 , workOptions
+                , price
                 }
             ]
 

@@ -114,3 +114,4 @@ getBySlug (Slug slug) = I.mapEntity go <$> Db.getBy (I.UniqueProductSlug slug)
         , price       = I.productPrice product
         , description = I.productDescription product
         }
+

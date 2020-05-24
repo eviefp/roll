@@ -61,6 +61,7 @@ ProductVariant
     name Text
     code Text
     price Int
+    priceFormula Text
     description Text Maybe
 
     Primary pvid

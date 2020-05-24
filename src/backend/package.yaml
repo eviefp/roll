@@ -25,10 +25,13 @@ dependencies:
 - bytestring
 - containers
 - esqueleto
+- free
 - filepath
+- generic-data
 - generic-lens
 - http-media
 - lens
+- megaparsec
 - monad-control
 - monad-logger
 - mtl
@@ -36,6 +39,7 @@ dependencies:
 - persistent-postgresql
 - persistent-template
 - postgresql-simple
+- recursion-schemes
 - servant
 - servant-rawm
 - servant-server
@@ -48,8 +52,10 @@ default-extensions:
 - BlockArguments
 - DataKinds
 - DeriveAnyClass
+- DeriveFoldable
 - DeriveFunctor
 - DeriveGeneric
+- DeriveTraversable
 - DerivingVia
 - EmptyCase
 - FlexibleContexts
