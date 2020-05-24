@@ -17,21 +17,29 @@ create table "product_option"
     , "oid" integer references "option" ("oid")
     );
 
-insert into "option" ("name", "description") values
-    ( 'wave', 'bla' ),
-    ( 'foo', 'foobar' );
+insert into "option" 
+    ("name" , "description") values
+    -- 1
+    ( 'wave', 'Tipuri carucioare:' )
+    ;
 
-insert into "option_item" ("oid", "name") values
+insert into "option_item" 
+    ("oid", "name") values
     -- wave
-    ( 1, 'da' ),
-    ( 1, 'nu' ),
-    -- foo
-    ( 2, 'bar' ),
-    ( 2, 'baz' );
+    ( 1   , 'normale' )    ,
+    ( 1   , 'wave' )
+    ;
 
-insert into "product_option" ("pid", "oid") values
-    ( 1 , 1 ),
-    ( 2 , 2 );
+insert into "product_option" 
+    ("pid", "oid") values
+    -- wave
+    ( 3 , 1 ),
+    ( 4 , 1 ),
+    ( 5 , 1 ),
+    ( 6 , 1 ),
+    ( 7 , 1 ),
+    ( 8 , 1 )
+    ;
 
 -- migrate:down
 drop table "product_option";

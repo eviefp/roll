@@ -6,10 +6,14 @@ create table "category"
     , constraint category_slug_unique unique ("slug")
     );
 
-insert into category ("slug", "name") values
-    ( 'sisteme', 'Sisteme perdele' ),
-    ( 'materiale', 'Materiale' ),
-    ( 'manopera', 'Manopera' );
+insert into category 
+    ("slug"      , "name") values
+    -- 1
+    ('sisteme'  , 'Sisteme perdele' ),
+    -- 2
+    ('materiale', 'Materiale' )      ,
+    -- 3
+    ('manopera' , 'Manopera' );
 
 -- migrate:down
 drop table "category"
