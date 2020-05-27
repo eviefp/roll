@@ -28,7 +28,7 @@ parseProgram = M.many end *> M.many (parseStatement <* end)
 parseStatement
     :: Parser E.Statement
 parseStatement =
-    M.try (parseUnaryId "in" E.In)
+    M.try (E.In <$> (lexeme "id" *> parseIdentifier) <*> parseDouble)
     <|> M.try (parseUnaryId "out" E.Out)
     <|> parseAssignment
 

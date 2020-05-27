@@ -20,6 +20,8 @@ eval stmts inputs =
         pure
             $ foldl1 M.union res
 
+-- The state map is the current environment, and the return map represents the
+-- environment we export downstream.
 evalStatement
     :: E.Statement
     -> S.State (M.Map Identifier Double) (M.Map E.Identifier Double)
@@ -28,7 +30,8 @@ evalStatement =
         -- TODO: Currently everything that was 'out'putted will be available
         -- 'in' the current scope. We should probably tag variables somehow
         -- if we want to enforce this.
-        E.In _              -> pure mempty
+        E.In ident def      -> S.modify (M.alter (pure . fromMaybe def) ident)
+            $> mempty
         E.Out ident         -> maybe mempty (M.singleton ident)
             <$> S.gets (M.lookup ident)
         E.Assign ident expr -> S.modify (go ident expr) $> M.empty

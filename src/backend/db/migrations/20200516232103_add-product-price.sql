@@ -6,7 +6,7 @@ update "product_variant"
   set price_formula =
 --    'in lungime'
 '
-in latime
+in latime 150
 pretPerCm = 123
 pret = floor (pretPerCm * latime)
 result = pret
@@ -20,7 +20,7 @@ out foo
 update "product_variant"
   set price_formula =
 '
-in foo
+in foo 1
 bar = foo * 2
 out bar
 
@@ -32,8 +32,8 @@ out result
 update "product_variant"
   set price_formula =
 '
-in bar
-in foo
+in bar 0
+in foo 0
 foobar = foo + bar
 
 out foobar

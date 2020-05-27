@@ -35,14 +35,14 @@ data ExprF a b where
         :: b -> b -> ExprF a b
     Divide
         :: b -> b -> ExprF a b
-    -- -- Rounding
+    -- Rounding
     Floor
         :: b -> ExprF a b
     Ceil
         :: b -> ExprF a b
     Round
         :: b -> ExprF a b
-    -- -- Comparison
+    -- Comparison
     Min
         :: b -> b -> ExprF a b
     Max
@@ -54,7 +54,7 @@ instance (Show a) => Classes.Show1 (ExprF a) where
 
 data Statement where
     In
-        :: Identifier -> Statement
+        :: Identifier -> Double -> Statement
     Assign
         :: Identifier -> Expr Double -> Statement
     Out
