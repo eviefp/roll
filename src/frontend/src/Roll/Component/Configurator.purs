@@ -90,6 +90,8 @@ component = Hooks.component \_ _ -> Hooks.do
         renderSelection =
             A.catMaybes
                 [ renderSelectionItem systemOptions <$> system
+                , renderSelectionItem materialOptions <$> material
+                , renderSelectionItem workOptions <$> work
                 ]
 
         renderSelectionItem
