@@ -13,7 +13,7 @@ import Data.Array as A
 import Data.Either (hush)
 import Data.Generic.Rep as G
 import Data.Generic.Rep.Show as GS
-import Data.Maybe (Maybe(..))
+import Data.Maybe (Maybe(..), maybe)
 import Data.Newtype (class Newtype)
 import Data.Tuple.Nested ((/\), type (/\))
 import Effect.Aff.Class (class MonadAff)
@@ -34,7 +34,7 @@ type HTML m = H.ComponentHTML (Hooks.HookM m Unit) () m
 
 type HookComponent m a = a /\ (Unit -> HTML m)
 
-data Step = Minimized | ShowProducts | ShowVariants String
+data Step = Minimized | ShowProducts | ShowVariants String | ShowOptions
 
 derive instance eqCategoryStep :: Eq Step
 derive instance genericCategoryStep :: G.Generic Step _
@@ -77,13 +77,18 @@ hook slug text = Hooks.wrap Hooks.do
     selectedOptions /\ modifySelectedOptions <- Hooks.useState []
     systems <- UseAPI.hook (Category.getRestrictedProducts slug) slugs
 
-    Hooks.captures { systemsStep } Hooks.useTickEffect do
+    Hooks.captures { systemsStep, selectedOptions } Hooks.useTickEffect do
         case systemsStep of
             ShowVariants productSlug -> do
                 variants <- H.liftAff $ runExceptT $ PV.getProducts productSlug
                 options' <- H.liftAff $ runExceptT $ PO.getByProduct productSlug
                 modifySystemShowVariants (const (hush variants))
                 modifyOptions (const (hush options'))
+                pure Nothing
+            ShowOptions -> do
+                if A.length selectedOptions == maybe 0 A.length options
+                    then modifySystemsStep (const Minimized)
+                    else mempty
                 pure Nothing
             _ -> pure Nothing
 
@@ -102,7 +107,7 @@ hook slug text = Hooks.wrap Hooks.do
         withSelectPV p =
             [ HP.href "#"
             , HE.onClick $ Just <<< const do
-                modifySystemsStep (const Minimized)
+                modifySystemsStep (const ShowOptions)
                 modifySystem (const (Just p.slug))
             ]
 
@@ -159,7 +164,10 @@ hook slug text = Hooks.wrap Hooks.do
                             [ I.maybeElement systemShowVariants do
                                 HH.article_
                                     <<< map (CP.renderProductVariant withSelectPV)
-                            , I.maybeElement options do
+                            ]
+                    ShowOptions ->
+                        HH.section_
+                            [ I.maybeElement options do
                                 HH.aside_ <<< map renderOptions
                             ]
                 ]
