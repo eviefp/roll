@@ -51,7 +51,7 @@ newtype CategoryView hooks
         ( Hooks.UseState (Array String)
         ( Hooks.UseState (Maybe (Array (PV.ProductVariant)))
         ( Hooks.UseState Step
-        ( Hooks.UseState (Maybe String) hooks ))))))))
+        ( Hooks.UseState (Maybe PV.ProductVariant) hooks ))))))))
 
 derive instance newtypeCategoryView :: Newtype (CategoryView hooks) _
 
@@ -67,7 +67,11 @@ hook
     -> Hooks.Hook
       m
       CategoryView
-      (Maybe String /\ Array SelectedOption /\ UpdateSlugs m /\ (Unit -> HTML m))
+      (Maybe PV.ProductVariant
+          /\ Array SelectedOption
+          /\ UpdateSlugs m
+          /\ (Unit -> HTML m)
+      )
 hook slug text = Hooks.wrap Hooks.do
     system /\ modifySystem <- Hooks.useState Nothing
     systemsStep /\ modifySystemsStep <- Hooks.useState Minimized
@@ -108,7 +112,7 @@ hook slug text = Hooks.wrap Hooks.do
             [ HP.href "#"
             , HE.onClick $ Just <<< const do
                 modifySystemsStep (const ShowOptions)
-                modifySystem (const (Just p.slug))
+                modifySystem (const (Just p))
             ]
 
         renderOptions :: PO.Option -> HTML m
