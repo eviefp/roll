@@ -118,10 +118,8 @@ hook slug text = Hooks.wrap Hooks.do
         renderOptions :: PO.Option -> HTML m
         renderOptions option =
             HH.fieldset_ $
-                [ HH.label
-                    [ HP.for option.name
-                    ]
-                    [ HH.text option.name
+                [ HH.label_
+                    [ HH.text option.description
                     ]
                 ]
                 <> (renderOptionItem option.name <$> option.options)
