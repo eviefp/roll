@@ -17,20 +17,20 @@ create table "product_option"
     , "oid" integer references "option" ("oid")
     );
 
-insert into "option" 
+insert into "option"
     ("name" , "description") values
     -- 1
     ( 'wave', 'Tipuri carucioare:' )
     ;
 
-insert into "option_item" 
+insert into "option_item"
     ("oid", "name") values
     -- wave
     ( 1   , 'normale' )    ,
     ( 1   , 'wave' )
     ;
 
-insert into "product_option" 
+insert into "product_option"
     ("pid", "oid") values
     -- wave
     ( 3 , 1 ),
