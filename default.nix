@@ -45,9 +45,12 @@ let
 
   hlint = pkgs.haskell.packages.ghc8101.callPackage ./nix/hlint.nix {};
 
+  callNode2Nix = import ./nix/callNode2Nix.nix;
+
   self = {
     inherit (pkgs) niv;
     inherit pkgs easy-ps ghcide hlint;
+    inherit callNode2Nix;
   };
 
 in

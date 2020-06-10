@@ -48,5 +48,5 @@ data HttpConfig =
     deriving anyclass ( Aeson.ToJSON, Aeson.FromJSON )
 
 read
-    :: IO Config
-read = Yaml.loadYamlSettings [ "roll.yaml" ] [] Yaml.useEnv
+    :: FilePath -> IO Config
+read path = Yaml.loadYamlSettings [ path ] [] Yaml.useEnv
