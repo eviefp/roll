@@ -152,7 +152,12 @@ hook slug text = Hooks.wrap Hooks.do
         render _ =
             HH.section_
                 [ HH.header
-                    [ HE.onClick $ Just <<< const (modifySystemsStep (const ShowProducts))
+                    [ I.maybeProperty
+                        systems
+                        (const
+                            $ HE.onClick
+                            $ Just <<< const (modifySystemsStep (const ShowProducts))
+                        )
                     ]
                     [ HH.text text
                     ]
