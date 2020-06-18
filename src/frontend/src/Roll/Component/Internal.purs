@@ -3,8 +3,10 @@ module Roll.Component.Internal
     , whenElement
     , getSlug
     , loading
-    , hpure
     , emptyElement
+    , whenProperty
+    , maybeProperty
+    , emptyProperty
     ) where
 
 import Prelude
@@ -15,9 +17,9 @@ import Data.Newtype (unwrap)
 import Data.String as S
 import Data.Traversable (foldMap)
 import Effect (Effect)
+import Halogen as H
 import Halogen.HTML as HH
-import Halogen.Hooks as Hooks
-import Unsafe.Coerce (unsafeCoerce)
+import Halogen.HTML.Properties as HP
 import Web.HTML as HTML
 import Web.HTML.Location as Location
 import Web.HTML.Window as Window
@@ -44,11 +46,15 @@ getSlug = go <$> href
 href :: Effect String
 href = HTML.window >>= Window.location >>= Location.href
 
+maybeProperty :: forall p i a. Maybe a -> (a -> HH.IProp p i) -> HH.IProp p i
+maybeProperty m f = maybe emptyProperty f m
+
+whenProperty :: forall p i. Boolean -> (Unit -> HH.IProp p i) -> HH.IProp p i
+whenProperty cond f = if cond then f unit else emptyProperty
+
+emptyProperty :: forall p i. HH.IProp p i
+emptyProperty = HP.attr (H.AttrName "data-ignore") "ignore"
+
 loading :: forall p i. HH.HTML p i
 loading = HH.text "loading..."
 
-hpure :: forall m a hook. a -> Hooks.Hook m hook a
-hpure a = unsafeCoerce go
-  where
-    go :: forall h. Hooks.Hooked m (hook h) (hook h) a
-    go = Hooks.pure a
