@@ -6,11 +6,11 @@
   "scripts": {
     "build": "npm run build-html && npm run build-css",
     "build-html": "node build.js",
-    "build-css": "parcel build --no-source-maps --no-autoinstall --bundle-node-modules -d ../public/css --public-url /css css/index.scss"
+    "build-css": "parcel build --no-source-maps --no-autoinstall -d ../public/css --public-url /css css/index.scss"
   },
   "author": "",
   "license": "ISC",
-  "devDependencies": {
+  "dependencies": {
     "parcel": "^1.12.4",
     "sass": "^1.26.5"
   }

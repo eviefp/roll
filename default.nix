@@ -38,6 +38,7 @@ let
     overlays = [ overlay hpOverlay hpHeadOverlay ];
     config = {};
   };
+  gis = import sources.gitignore { inherit (pkgs) lib; };
 
   easy-ps = import sources.easy-purescript-nix { inherit pkgs; };
 
@@ -45,9 +46,13 @@ let
 
   hlint = pkgs.haskell.packages.ghc8101.callPackage ./nix/hlint.nix {};
 
+  callNode2Nix = import ./nix/callNode2Nix.nix;
+
   self = {
     inherit (pkgs) niv;
     inherit pkgs easy-ps ghcide hlint;
+    inherit callNode2Nix;
+    inherit (gis) gitignoreSource;
   };
 
 in

@@ -8,8 +8,14 @@ import           Roll
     ( startApp
     )
 
+import           System.Environment
+    ( getArgs
+    )
+
 main
     :: IO ()
 main =
-    putStrLn "Starting Roll..."
-    *> startApp
+    do
+        putStrLn "Starting Roll..."
+        getArgs
+            >>= startApp . fromMaybe "roll.yaml" . listToMaybe

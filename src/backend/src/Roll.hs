@@ -20,10 +20,10 @@ import qualified Servant                     as Servant
 import qualified Servant.Server.Generic      as GServant
 
 startApp
-    :: IO ()
-startApp =
+    :: FilePath -> IO ()
+startApp configPath =
     do
-        config <- Config.read
+        config <- Config.read configPath
         Logger.runStderrLoggingT
             . Postgresql.withPostgresqlPool (connectionString config) 10
             $ \connectionPool -> do
