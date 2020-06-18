@@ -1,5 +1,4 @@
 let
-  inherit (import ../..) pkgs ghcide hlint postgres;
-  package = pkgs.cabal2nix ".";
+  inherit (import ../..) pkgs gitignoreSource;
 in
-  pkgs.haskell.packages.ghc883.callCabal2nix "." ./. {}
+  pkgs.haskell.packages.ghc883.callCabal2nix "roll-backend" (gitignoreSource ./.) {}

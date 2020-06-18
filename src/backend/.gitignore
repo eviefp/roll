@@ -3,3 +3,4 @@ backend.cabal
 *~
 .pgdata
 db/schema.sql
+result*

@@ -1,10 +1,10 @@
 let
-  inherit (import ../..) pkgs callNode2Nix;
+  inherit (import ../..) pkgs callNode2Nix gitignoreSource;
   frontend = import ../frontend;
   rollNode2Nix = callNode2Nix {
     inherit pkgs;
     name = "rollNode2Nix";
-    src = ./.;
+    src = gitignoreSource ./.;
   };
   nodeEnv = import "${rollNode2Nix}/node-env.nix" {
     inherit (pkgs) stdenv python2 utillinux runCommand writeTextFile nodejs;

@@ -1,5 +1,5 @@
 let
-  inherit (import ../..) pkgs easy-ps;
+  inherit (import ../..) pkgs easy-ps gitignoreSource;
   spagoPkgs = import ./spago-packages.nix { inherit pkgs; };
   removeHashBang = drv: drv.overrideAttrs (oldAttrs: {
           buildCommand = builtins.replaceStrings ["#!/usr/bin/env"] [""] oldAttrs.buildCommand;
@@ -7,7 +7,7 @@ let
 in
   pkgs.stdenv.mkDerivation rec {
     name = "roll-frontend";
-    src = ./src;
+    src = gitignoreSource ./src;
     buildInputs = with easy-ps; [ purs spago pkgs.fish ];
     buildCommand = ''
       ${removeHashBang spagoPkgs.installSpagoStyle} # == spago2nix install

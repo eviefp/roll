@@ -1,11 +1,11 @@
 let
-  inherit (import ../..) pkgs;
+  inherit (import ../..) pkgs gitignoreSource;
   dependencies = [ pkgs.postgresql pkgs.dbmate ];
 in
   pkgs.stdenv.mkDerivation rec {
     name = "roll-database";
     nativeBuildInputs = [ pkgs.makeWrapper ];
-    src = ../..;
+    src = gitignoreSource ../..;
     installPhase = ''
       mkdir -p $out/bin
       cp -R $src/script/pg* $out/bin
