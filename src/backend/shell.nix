@@ -1,11 +1,11 @@
 let
-  inherit (import ../..) pkgs ghcide hlint postgres;
+  inherit (import ../..) pkgs ghcide postgres hlint;
 in
   pkgs.mkShell rec {
     nativeBuildInputs = with pkgs; [
       cabal2nix
       haskell.compiler.ghc883
-      haskellPackages.ghcid_0_8_6
+      haskellPackages.ghcid
       haskellPackages.floskell
       ghcide
       hlint
