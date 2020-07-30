@@ -2,3 +2,4 @@
 /src/public
 /src/static-content/node_modules/
 /src/static-content/.cache/
+result*
