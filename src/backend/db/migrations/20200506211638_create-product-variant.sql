@@ -10,6 +10,7 @@ create table "product_variant"
     , constraint product_variant_slug_unique unique ("slug")
     , constraint product_variant_code_unique unique ("code")
     );
+-- this table has another column price_formula which is added in file add-product-price.sql
 
 insert into product_variant 
     ("pid", "slug"                     , "name"                                      , "code"         , "price" , "description") values
