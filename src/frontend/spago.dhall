@@ -19,6 +19,7 @@ You can edit this file as you like.
   , "strings"
   , "web-dom"
   , "web-html"
+  , "web-storage"
   ]
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]
