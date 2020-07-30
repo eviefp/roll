@@ -20,7 +20,7 @@ create table "product_option"
 insert into "option"
     ("name" , "description") values
     -- 1
-    ( 'wave', 'Tipuri carucioare:' )
+    ( 'wave', 'Tipuri carucioare' )
     ;
 
 insert into "option_item"
