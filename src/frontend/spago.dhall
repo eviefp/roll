@@ -15,6 +15,7 @@ You can edit this file as you like.
   , "profunctor-lenses"
   , "psci-support"
   , "random"
+  , "record-extra"
   , "simple-json"
   , "strings"
   , "web-dom"
