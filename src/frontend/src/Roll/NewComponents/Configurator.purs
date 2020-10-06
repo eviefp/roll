@@ -13,20 +13,21 @@ import Halogen as H
 import Halogen.HTML as HH
 import Halogen.HTML.Events as HE
 import Halogen.HTML.Properties as HP
-import Roll.API.Category as Category
+import Roll.API.Category as Cat
 import Roll.API.ProductVariant as ProductVariant
-import Roll.Capability.Category (class MonadCategory)
-import Roll.Capability.MonadProduct (class MonadProduct)
-import Roll.Capability.Slug (class MonadSlug, Slug)
+import Roll.Capability.Category as Category
+import Roll.Capability.MonadProduct as Product
+import Roll.Capability.Slug (class MonadSlug, Slug(..))
 
 type HTML m = H.ComponentHTML Action () m
 
 data Action
     = SetWidth Int
     | SetHeight Int
+    | WidthHeightDone
 
 type SizeWith a = { width :: Int, height :: Int | a }
-type P1 = Array Category.Product
+type P1 = Array Cat.Product
 type P2 = Array ProductVariant.ProductVariant
 type P3 = Maybe Slug
 type SizeWithSystemWith a =
@@ -76,11 +77,27 @@ stateHeight f = case _ of
     GetWorkP2 rec -> GetWorkP2 $ rec { height = f rec.width }
     Calculate rec -> Calculate $ rec { height = f rec.width }
 
+gotoSystemP1
+    :: forall o m
+     . Category.MonadCategory m
+    => H.HalogenM State Action () o m Unit
+gotoSystemP1 = do
+    msystem <- Category.getProducts $ Slug "sisteme"
+    H.modify_
+        case _ of
+            GetSize gs ->
+                fromMaybe (GetSize gs) do
+                    width <- gs.width
+                    height <- gs.height
+                    system <- msystem
+                    pure $ GetSystemP1 { width, height, system }
+            other -> other
+
 component
     :: forall q o m
      . MonadSlug m
-    => MonadCategory m
-    => MonadProduct m
+    => Category.MonadCategory m
+    => Product.MonadProduct m
     => H.Component HH.HTML q Unit o m
 component =
     H.mkComponent
@@ -113,8 +130,7 @@ renderOverall = case _ of
             [ HH.text $ "width: " <> show width
             , HH.text $ "height: " <> show height <> " | "
             ]
-    _ -> HH.text "nop"
-
+    _ -> HH.text "nop" 
 
 renderWidthHeight :: forall m. HTML m
 renderWidthHeight =
@@ -158,13 +174,26 @@ renderNumericInput {id, text, min, max, action} =
     go :: String -> Maybe Action
     go = map (action <<< Int.ceil) <<< Number.fromString
 
+renderButton
+    :: forall m
+     . { text :: String, action :: Action }
+    -> HTML m
+renderButton { text, action } =
+    HH.a
+        [ HP.href "#"
+        , HE.onClick $ Just <<< const action
+        ]
+        [ HH.text text
+        ]
+
 handleAction
     :: forall m o
      . MonadSlug m
-    => MonadCategory m
-    => MonadProduct m
+    => Category.MonadCategory m
+    => Product.MonadProduct m
     => Action
     -> H.HalogenM State Action () o m Unit
 handleAction = case _ of
     SetWidth i -> stateWidth .= i
     SetHeight i -> stateHeight .= i
+    WidthHeightDone -> mempty
