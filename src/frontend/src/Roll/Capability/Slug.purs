@@ -14,6 +14,8 @@ import Halogen (HalogenM)
 
 newtype Slug = Slug String
 
+derive newtype instance showSlug :: Show Slug
+
 unSlug :: Slug -> String
 unSlug (Slug s) = s
 

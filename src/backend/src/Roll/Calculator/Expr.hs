@@ -5,11 +5,11 @@ module Roll.Calculator.Expr
     , Statement(..)
     ) where
 
-import           Roll.Prelude
+import Roll.Prelude
 
 import qualified Data.Aeson            as Aeson
+import           Data.Fix              (Fix)
 import qualified Data.Functor.Classes  as Classes
-import qualified Data.Functor.Foldable as F
 import qualified Generic.Data          as G
 
 newtype Identifier =
@@ -61,4 +61,4 @@ data Statement where
         :: Identifier -> Statement
     deriving stock ( Generic, Show )
 
-type Expr a = F.Fix (ExprF a)
+type Expr a = Fix (ExprF a)

@@ -47,6 +47,12 @@ instance monadCategoryAppM :: MonadCategory AppM where
             <<< runExceptT
             <<< CategoryAPI.getProducts
             <<< unSlug
+    getRestrictedProducts s =
+        AppM
+            <<< map hush
+            <<< runExceptT
+            <<< CategoryAPI.getRestrictedProducts (unSlug s)
+            <<< map unSlug
 
 instance monadProductAppM :: MonadProduct AppM where
     getProducts =

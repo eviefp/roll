@@ -2,4 +2,5 @@
 /src/public
 /src/static-content/node_modules/
 /src/static-content/.cache/
+/src/backend/dist-newstyle/
 result*

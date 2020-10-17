@@ -24,6 +24,7 @@ dependencies:
 - aeson
 - bytestring
 - containers
+- data-fix
 - esqueleto
 - free
 - filepath
@@ -42,6 +43,7 @@ dependencies:
 - recursion-schemes
 - servant
 - servant-rawm
+- servant-rawm-server
 - servant-server
 - text
 - transformers-base

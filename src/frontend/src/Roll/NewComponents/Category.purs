@@ -14,6 +14,7 @@ import Roll.API.Category as Category
 import Roll.Capability.Category (class MonadCategory, Title, getProducts, getTitle, unTitle)
 import Roll.Capability.Slug (class MonadSlug, Slug(..), getSlug)
 import Roll.Component.Internal as I
+import Roll.NewComponents.Common as Common
 
 type HTML m = H.ComponentHTML Action () m
 
@@ -45,39 +46,13 @@ render  { title, products } =
         [ HH.h1_
             [ HH.text (unTitle title)
             ]
-        , HH.ul_ (renderProduct withUrl <$> products)
+        , HH.ul_ (Common.renderProduct withUrl <$> products)
         ]
 
 withUrl :: forall i. Category.Product -> Array (HH.IProp D.HTMLa i)
 withUrl p =
     [ HP.href $ "/produs/" <> p.slug
     ]
-
-renderProduct
-    :: forall p i
-     . (Category.Product -> Array (HH.IProp D.HTMLa i))
-    -> Category.Product
-    -> HH.HTML p i
-renderProduct prop p =
-    HH.li_
-        [ HH.dt_
-            [ HH.a
-                (prop p)
-                [ HH.img
-                    [ HP.src "https://placeimg.com/250/150/architecture"
-                    ]
-                , HH.h3_
-                    [ HH.text p.name
-                    ]
-                , HH.samp_
-                    [ HH.text $ show p.price
-                    ]
-                ]
-            ]
-        , HH.dd_
-            [ I.maybeElement p.description HH.text
-            ]
-        ]
 
 handleAction
     :: forall m o

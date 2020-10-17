@@ -14,6 +14,7 @@ import Roll.API.ProductVariant as ProductVariant
 import Roll.Capability.MonadProduct (class MonadProduct, getProducts)
 import Roll.Capability.Slug (class MonadSlug, Slug(..), getSlug)
 import Roll.Component.Internal as I
+import Roll.NewComponents.Common as Common
 
 type HTML m = H.ComponentHTML Action () m
 
@@ -41,39 +42,13 @@ component =
 render :: forall m. {  products :: Array ProductVariant.ProductVariant } -> HTML m
 render  { products } =
     HH.section_
-        [ HH.ul_ (renderProductVariant withUrl <$> products)
+        [ HH.ul_ (Common.renderProductVariant withUrl <$> products)
         ]
 
 withUrl :: forall i. ProductVariant.ProductVariant -> Array (HH.IProp D.HTMLa i)
 withUrl p =
     [ HP.href $ "/configurator/" <> p.slug
     ]
-
-renderProductVariant
-    :: forall p i
-     . (ProductVariant.ProductVariant -> Array (HH.IProp D.HTMLa i))
-    -> ProductVariant.ProductVariant
-    -> HH.HTML p i
-renderProductVariant prop p =
-    HH.li_
-        [ HH.dt_
-            [ HH.a
-                (prop p)
-                [ HH.img
-                    [ HP.src "https://placeimg.com/250/150/animals"
-                    ]
-                , HH.h3_
-                    [ HH.text p.name
-                    ]
-                , HH.samp_
-                    [ HH.text $ show p.price
-                    ]
-                ]
-            ]
-        , HH.dd_
-            [ I.maybeElement p.description HH.text
-            ]
-        ]
 
 handleAction
     :: forall m o

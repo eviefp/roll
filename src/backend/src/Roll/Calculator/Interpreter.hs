@@ -3,9 +3,9 @@ module Roll.Calculator.Interpreter
     , eval
     ) where
 
-import           Roll.Prelude
+import Roll.Prelude
 
-import           Roll.Calculator.Expr       as E
+import Roll.Calculator.Expr as E
 
 import qualified Control.Monad.State.Strict as S
 import qualified Data.Functor.Foldable      as F
@@ -67,5 +67,4 @@ evalExpr vars = F.cata go
             Round val            -> fromInteger . round <$> val
             Min left right       -> min <$> left <*> right
             Max left right       -> max <$> left <*> right
-
 

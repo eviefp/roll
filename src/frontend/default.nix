@@ -1,18 +1,13 @@
 let
-  inherit (import ../..) pkgs easy-ps gitignoreSource;
-  spagoPkgs = import ./spago-packages.nix { inherit pkgs; };
-  removeHashBang = drv: drv.overrideAttrs (oldAttrs: {
-          buildCommand = builtins.replaceStrings ["#!/usr/bin/env"] [""] oldAttrs.buildCommand;
-        });
+  inherit (import ../..) pkgs purescript gitignoreSource;
 in
   pkgs.stdenv.mkDerivation rec {
     name = "roll-frontend";
     src = gitignoreSource ./src;
-    buildInputs = with easy-ps; [ purs spago pkgs.fish ];
+    buildInputs = [ purescript.spago ];
     buildCommand = ''
-      ${removeHashBang spagoPkgs.installSpagoStyle} # == spago2nix install
-      fish -c "purs compile .spago/*/*/src/**.purs $src/**.purs"
       mkdir -p $out
-      purs bundle "output/*/*.js" -m Main --main Main -o $out/index.js
+      echo "hello" > $out/index.js
+      # spago bundle-app --to $out/index.js
       '';
   }

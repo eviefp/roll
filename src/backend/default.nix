@@ -1,4 +1,8 @@
 let
-  inherit (import ../..) pkgs gitignoreSource;
+  inherit (import ../..) pkgs haskell gitignoreSource;
 in
-  pkgs.haskell.packages.ghc883.callCabal2nix "roll-backend" (gitignoreSource ./.) {}
+  tooling.haskell.callCabal2nix
+    "roll-backend"
+    (gitignoreSource ./.)
+    { staticBuildInputs = [ pkgs.zlib ];
+    }

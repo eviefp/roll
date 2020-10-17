@@ -2,6 +2,7 @@ module Roll.Capability.Category
     ( class MonadCategory
     , getTitle
     , getProducts
+    , getRestrictedProducts
     , unTitle
     , Title (Title)
     ) where
@@ -24,7 +25,9 @@ unTitle (Title s) = s
 class Monad m <= MonadCategory m where
     getTitle :: Slug -> m (Maybe Title)
     getProducts :: Slug -> m (Maybe (Array Product))
+    getRestrictedProducts :: Slug -> Array Slug -> m (Maybe (Array Product))
 
 instance monadCategoryHalogenM :: MonadCategory m => MonadCategory (HalogenM st act slots msg m) where
     getTitle = lift <<< getTitle
     getProducts = lift <<< getProducts
+    getRestrictedProducts s = lift <<< getRestrictedProducts s

@@ -1,6 +1,6 @@
 let
   inherit (import ../..) pkgs callNode2Nix gitignoreSource;
-  frontend = import ../frontend;
+  # frontend = import ../frontend;
   rollNode2Nix = callNode2Nix {
     inherit pkgs;
     name = "rollNode2Nix";
@@ -31,6 +31,6 @@ in
       mkdir -p $out
       cp -R public/* $out
       mkdir $out/js
-      cp ${frontend}/index.js $out/js
+      cp index.js $out/js
       '';
   }

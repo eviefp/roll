@@ -4,6 +4,9 @@ module Roll.NewComponents.Configurator
 
 import Prelude
 
+import DOM.HTML.Indexed as D
+import Data.Generic.Rep (class Generic)
+import Data.Generic.Rep.Show (genericShow)
 import Data.Int as Int
 import Data.Lens ((.=))
 import Data.Lens as Lens
@@ -18,6 +21,7 @@ import Roll.API.ProductVariant as ProductVariant
 import Roll.Capability.Category as Category
 import Roll.Capability.MonadProduct as Product
 import Roll.Capability.Slug (class MonadSlug, Slug(..))
+import Roll.NewComponents.Common as Common
 
 type HTML m = H.ComponentHTML Action () m
 
@@ -25,11 +29,20 @@ data Action
     = SetWidth Int
     | SetHeight Int
     | WidthHeightDone
+    | SelectSystemP1 Slug
+    | SelectSystemP2 Slug
+    | SelectMaterialP1 Slug
+    | SelectMaterialP2 Slug
 
-type SizeWith a = { width :: Int, height :: Int | a }
 type P1 = Array Cat.Product
 type P2 = Array ProductVariant.ProductVariant
 type P3 = Maybe Slug
+
+type SizeWith a =
+    { width :: Int
+    , height :: Int
+    | a
+    }
 type SizeWithSystemWith a =
     { width :: Int
     , height :: Int
@@ -43,7 +56,9 @@ type SizeWithSystemWithMaterialWith a =
     , material :: P3
     | a
     }
-type AllData = SizeWithSystemWithMaterialWith (work :: P3)
+type AllData = SizeWithSystemWithMaterialWith
+    ( work :: P3
+    )
 
 data State
     = GetSize { width :: Maybe Int, height :: Maybe Int }
@@ -54,6 +69,11 @@ data State
     | GetWorkP1 (SizeWithSystemWithMaterialWith (work :: P1))
     | GetWorkP2 (SizeWithSystemWithMaterialWith (work :: P2))
     | Calculate AllData
+
+derive instance genericState :: Generic State _
+
+instance showState :: Show State where
+    show s = genericShow s
 
 stateWidth :: Lens.Setter' State Int
 stateWidth f = case _ of
@@ -93,6 +113,67 @@ gotoSystemP1 = do
                     pure $ GetSystemP1 { width, height, system }
             other -> other
 
+gotoSystemP2
+    :: forall o m
+     . Product.MonadProduct m
+    => Slug
+    -> H.HalogenM State Action () o m Unit
+gotoSystemP2 s = do
+    Product.getProducts s >>= case _ of
+        Nothing -> pure unit
+        Just pv ->
+            H.modify_
+                case _ of
+                    GetSystemP1 { width, height } ->
+                        GetSystemP2 { width, height, system: pv }
+                    other -> other
+
+gotoMaterialP1
+    :: forall o m
+     . Category.MonadCategory m
+    => Slug
+    -> H.HalogenM State Action () o m Unit
+gotoMaterialP1 slug = do
+    Category.getRestrictedProducts (Slug "materiale") [ slug ] >>= case _ of
+        Nothing -> pure unit
+        Just mats ->
+            H.modify_
+                case _ of
+                    GetSystemP2 { width, height } ->
+                        GetMaterialP1 { width, height, system: Just slug, material: mats }
+                    other -> other
+
+gotoMaterialP2
+    :: forall o m
+     . Product.MonadProduct m
+    => Slug
+    -> H.HalogenM State Action () o m Unit
+gotoMaterialP2 s = do
+    Product.getProducts s >>= case _ of
+        Nothing -> pure unit
+        Just pv ->
+            H.modify_
+                case _ of
+                    GetMaterialP1 { width, height, system } ->
+                        GetMaterialP2 { width, height, system, material: pv }
+                    other -> other
+
+gotoWorkP1
+    :: forall o m
+     . Category.MonadCategory m
+    => Slug
+    -> H.HalogenM State Action () o m Unit
+gotoWorkP1 slug = do
+    -- we need both slugs here!
+    Category.getRestrictedProducts (Slug "manopera") [slug] >>= case _ of
+        Nothing -> pure unit
+        Just work ->
+            H.modify_
+                case _ of
+                    GetMaterialP2 { width, height, system } ->
+                        GetWorkP1 { width, height, system: system, material: Just slug, work }
+                    other -> other
+
 component
     :: forall q o m
      . MonadSlug m
@@ -120,21 +201,20 @@ render st =
 
 renderCurrentState :: forall m. State -> HTML m
 renderCurrentState = case _ of
-    GetSize _ -> renderWidthHeight
+    GetSize s -> renderWidthHeight s
+    GetSystemP1 p -> renderProducts SelectSystemP1 p.system
+    GetSystemP2 p -> renderProductVariants SelectSystemP2 p.system
+    GetMaterialP1 p -> renderProducts SelectMaterialP1 p.material
+    GetMaterialP2 p -> renderProductVariants SelectMaterialP2 p.material
     _ -> HH.text "nope"
 
 renderOverall :: forall m. State -> HTML m
-renderOverall = case _ of
-    GetSize { width, height } ->
-        HH.div_
-            [ HH.text $ "width: " <> show width
-            , HH.text $ "height: " <> show height <> " | "
-            ]
-    _ -> HH.text "nop" 
+renderOverall state =
+        HH.div_ [ HH.text $ show state ]
 
-renderWidthHeight :: forall m. HTML m
-renderWidthHeight =
-    HH.div_
+renderWidthHeight :: forall m. { width :: Maybe Int, height :: Maybe Int } -> HTML m
+renderWidthHeight s =
+    HH.div_ $
         [ renderNumericInput
             { id: "askWidth"
             , text: "Latime (cm):"
@@ -149,7 +229,36 @@ renderWidthHeight =
             , max: 700.0
             , action: SetHeight
             }
+        ] <> renderNextButton s
+
+renderProducts :: forall m. (Slug -> Action) -> P1 -> HTML m
+renderProducts ctor arr =
+    HH.div_ $ Common.renderProduct withUrl <$> arr
+  where
+    withUrl :: Cat.Product -> Array (HH.IProp D.HTMLa Action)
+    withUrl p =
+        [ HP.href "#"
+        , HE.onClick $ Just <<< const (ctor $ Slug p.slug)
         ]
+
+renderProductVariants :: forall m. (Slug -> Action) -> P2 -> HTML m
+renderProductVariants ctor arr =
+    HH.div_ $ Common.renderProductVariant withUrl <$> arr
+  where
+    withUrl :: ProductVariant.ProductVariant -> Array (HH.IProp D.HTMLa Action)
+    withUrl p =
+        [ HP.href "#"
+        , HE.onClick $ Just <<< const (ctor $ Slug p.slug)
+        ]
+
+renderNextButton
+    :: forall m
+     . { width :: Maybe Int, height :: Maybe Int }
+    -> Array (HTML m)
+renderNextButton s =
+    case s.width, s.height of
+        Just _, Just _ -> [ renderButton { action: WidthHeightDone, text: "Next" } ]
+        _, _           -> []
 
 renderNumericInput
     :: forall m
@@ -194,6 +303,10 @@ handleAction
     => Action
     -> H.HalogenM State Action () o m Unit
 handleAction = case _ of
-    SetWidth i -> stateWidth .= i
-    SetHeight i -> stateHeight .= i
-    WidthHeightDone -> mempty
+    SetWidth i            -> stateWidth .= i
+    SetHeight i           -> stateHeight .= i
+    WidthHeightDone       -> gotoSystemP1
+    SelectSystemP1 slug   -> gotoSystemP2 slug
+    SelectSystemP2 slug   -> gotoMaterialP1 slug
+    SelectMaterialP1 slug -> gotoMaterialP2 slug
+    SelectMaterialP2 slug -> gotoWorkP1 slug

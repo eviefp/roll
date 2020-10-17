@@ -1,17 +1,8 @@
 let
-  inherit (import ../..) pkgs ghcide postgres hlint;
+  inherit (import ../..) pkgs haskell;
 in
-  pkgs.mkShell rec {
-    nativeBuildInputs = with pkgs; [
-      cabal2nix
-      haskell.compiler.ghc883
-      haskellPackages.ghcid
-      haskellPackages.floskell
-      ghcide
-      hlint
-      postgresql
-      dbmate
-    ];
+  pkgs.mkShell {
+    nativeBuildInputs = [ pkgs.postgresql pkgs.dbmate pkgs.zlib ] ++ haskell.defaultInputs;
     NIX_PATH = "nixpkgs=${pkgs.path}";
     inherit (import ./exports.nix) PGHOST PGPORT PGDATABASE PGUSER PGPASSWORD DATABASE_URL;
   }

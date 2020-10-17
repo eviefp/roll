@@ -5,11 +5,11 @@ module Roll.Calculator.Parser
     , Parser
     ) where
 
-import           Roll.Prelude
+import Roll.Prelude
 
-import qualified Roll.Calculator.Expr       as E
+import qualified Roll.Calculator.Expr as E
 
-import qualified Data.Functor.Foldable      as F
+import qualified Data.Fix                   as F
 import qualified Data.Text                  as T
 import qualified Text.Megaparsec            as M
 import qualified Text.Megaparsec.Char       as MC

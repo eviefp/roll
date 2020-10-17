@@ -11,7 +11,7 @@ instructions cannot appear near corresponding sections below
 because `dhall format` will delete the comment. However,
 it will not delete a top-level comment like this one.
 
-## Use Cases 
+## Use Cases
 Most will want to do one or both of these options:
 1. Override/Patch a package's dependency
 2. Add a package not already in the default package set
@@ -118,15 +118,14 @@ let additions =
 
 
 let upstream =
-      https://github.com/purescript/package-sets/releases/download/psc-0.13.6-20200423/packages.dhall sha256:c180a06bb5444fd950f8cbdd6605c644fd246deb397e62572b8f4a6b9dbcaf22
+      https://github.com/purescript/package-sets/releases/download/psc-0.13.8-20201007/packages.dhall sha256:35633f6f591b94d216392c9e0500207bb1fec42dd355f4fecdfd186956567b6b
 
 let overrides =
-    { halogen = upstream.halogen // { version = "v5.0.0-rc.9"}
-    , halogen-vdom = upstream.halogen-vdom // { version = "v6.1.3" }
-    , halogen-hooks = upstream.halogen-hooks // { version = "v0.3.0" }
-    }
+      { halogen = upstream.halogen // { version = "v5.0.0-rc.9" }
+      , halogen-vdom = upstream.halogen-vdom // { version = "v6.1.3" }
+      , halogen-hooks = upstream.halogen-hooks // { version = "v0.3.0" }
+      }
 
 let additions = {=}
-
 
 in  upstream // overrides // additions
